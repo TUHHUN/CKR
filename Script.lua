@@ -1,31 +1,16 @@
--- PHANTOM HUNTER v3.3 - DELTA EXECUTOR FIXED
-local Rayfield, rayfieldError = pcall(function()
-    return loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
-end)
+-- PHANTOM HUNTER v3.4 - ORION LIBRARY EDITION
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/OrionLibrary/Orion/main/source.lua'))()
 
-if not Rayfield then
-    warn("فشل تحميل Rayfield: " .. tostring(rayfieldError))
-    return
-end
-
-local Window = Rayfield:CreateWindow({
+local Window = OrionLib:MakeWindow({
     Name = "👁️ PHANTOM HUNTER ELITE",
-    LoadingTitle = "DELTA EXECUTOR COMPATIBLE",
-    LoadingSubtitle = "root@darknet:~$ sudo inject quantum_payload",
-    ConfigurationSaving = {Enabled = true, FolderName = "PhantomHunter", FileName = "DeltaConfig"}
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "PhantomHunter",
+    IntroEnabled = true,
+    IntroText = "QUANTUM AIMBOT LOADING"
 })
 
--- التحقق من دعم مكتبة الرسم
-if not Drawing then
-    Window:Notify({
-        Title = "⚠️  راسل مطورخطأ في الدعم",
-        Content = "جهازك لا يدعم مكتبة Drawing!",
-        Duration = 8,
-    })
-    return
-end
-
--- QUANTUM AIMBOT ENGINE (DELTA FIXED)
+-- QUANTUM AIMBOT ENGINE
 local FOVCircle = Drawing.new("Circle")
 FOVCircle.Visible = true
 FOVCircle.Radius = 80
@@ -53,234 +38,210 @@ local SkeletonESP = false
 local WeaponESP = false
 local ThreatLevelESP = false
 
--- DELTA EXECUTOR FIXES
-local SafeHook = true
-local DeltaCompatibility = true
+-- EXECUTOR FIXES
 local LightweightMode = false
+local SilentAim = false
 
 -- COMBAT TAB
-local CombatTab = Window:CreateTab("🔥 QUANTUM COMBAT", 4483362458)
-CombatTab:CreateToggle({
+local CombatTab = Window:MakeTab({
+    Name = "🔥 QUANTUM COMBAT",
+    Icon = "rbxassetid://4483362458",
+    PremiumOnly = false
+})
+
+CombatTab:AddToggle({
     Name = "AI AIMBOT",
-    CurrentValue = false,
-    Flag = "AimbotToggle",
-    Callback = function(State)
-        getgenv().SilentAim = State
-    end
+    Default = false,
+    Callback = function(Value)
+        SilentAim = Value
+    end    
 })
 
-CombatTab:CreateToggle({
-    Name = "DELTA HOOK FIX",
-    CurrentValue = SafeHook,
-    Flag = "HookFixToggle",
-    Callback = function(State)
-        SafeHook = State
-        SetupHook()
-    end
-})
-
-CombatTab:CreateToggle({
-    Name = "LIGHTWEIGHT MODE",
-    CurrentValue = LightweightMode,
-    Flag = "LightweightToggle",
-    Callback = function(State)
-        LightweightMode = State
-    end
-})
-
-CombatTab:CreateToggle({
+CombatTab:AddToggle({
     Name = "AUTO SHOOT",
-    CurrentValue = AutoShoot,
-    Flag = "AutoShootToggle",
-    Callback = function(State)
-        AutoShoot = State
-    end
+    Default = AutoShoot,
+    Callback = function(Value)
+        AutoShoot = Value
+    end    
 })
 
-CombatTab:CreateSlider({
+CombatTab:AddSlider({
     Name = "PREDICTION",
-    Range = {0.01, 0.5},
+    Min = 0.01,
+    Max = 0.5,
+    Default = Prediction,
+    Color = Color3.fromRGB(255,0,128),
     Increment = 0.01,
-    Suffix = "sec",
-    CurrentValue = Prediction,
-    Flag = "PredictionSlider",
+    ValueName = "sec",
     Callback = function(Value)
         Prediction = Value
-    end
+    end    
 })
 
-CombatTab:CreateSlider({
+CombatTab:AddSlider({
     Name = "SMOOTHING",
-    Range = {0.01, 1.0},
+    Min = 0.01,
+    Max = 1.0,
+    Default = Smoothing,
+    Color = Color3.fromRGB(255,0,128),
     Increment = 0.01,
-    Suffix = "x",
-    CurrentValue = Smoothing,
-    Flag = "SmoothingSlider",
+    ValueName = "x",
     Callback = function(Value)
         Smoothing = Value
-    end
+    end    
 })
 
-CombatTab:CreateDropdown({
+CombatTab:AddDropdown({
     Name = "TARGET PART",
+    Default = TargetPart,
     Options = {"Head", "HumanoidRootPart", "Torso", "Random"},
-    CurrentOption = TargetPart,
-    Flag = "TargetPartDropdown",
-    Callback = function(Option)
-        TargetPart = Option
-    end
+    Callback = function(Value)
+        TargetPart = Value
+    end    
 })
 
-CombatTab:CreateDropdown({
+CombatTab:AddDropdown({
     Name = "AIM MODE",
+    Default = AimMode,
     Options = {"Closest to Crosshair", "Lowest Health", "Highest Threat"},
-    CurrentOption = AimMode,
-    Flag = "AimModeDropdown",
-    Callback = function(Option)
-        AimMode = Option
-    end
+    Callback = function(Value)
+        AimMode = Value
+    end    
 })
 
-CombatTab:CreateToggle({
+CombatTab:AddToggle({
     Name = "TEAM CHECK",
-    CurrentValue = TeamCheck,
-    Flag = "TeamCheckToggle",
-    Callback = function(State)
-        TeamCheck = State
-    end
+    Default = TeamCheck,
+    Callback = function(Value)
+        TeamCheck = Value
+    end    
 })
 
-CombatTab:CreateToggle({
+CombatTab:AddToggle({
     Name = "WALL CHECK",
-    CurrentValue = WallCheck,
-    Flag = "WallCheckToggle",
-    Callback = function(State)
-        WallCheck = State
-    end
+    Default = WallCheck,
+    Callback = function(Value)
+        WallCheck = Value
+    end    
 })
 
-CombatTab:CreateSlider({
+CombatTab:AddSlider({
     Name = "FOV SIZE",
-    Range = {20, 600},
+    Min = 20,
+    Max = 600,
+    Default = 80,
+    Color = Color3.fromRGB(255,0,128),
     Increment = 10,
-    Suffix = "pixels",
-    CurrentValue = 80,
-    Flag = "FOVSlider",
+    ValueName = "pixels",
     Callback = function(Value)
         FOVCircle.Radius = Value
-    end
+    end    
 })
 
 -- VISUALS TAB
-local VisualsTab = Window:CreateTab("👁️ QUANTUM VISUALS", 4483362458)
-VisualsTab:CreateToggle({
+local VisualsTab = Window:MakeTab({
+    Name = "👁️ QUANTUM VISUALS",
+    Icon = "rbxassetid://4483362458",
+    PremiumOnly = false
+})
+
+VisualsTab:AddToggle({
     Name = "FOV VISIBLE",
-    CurrentValue = FOVVisible,
-    Flag = "FOVToggle",
-    Callback = function(State)
-        FOVVisible = State
-        FOVCircle.Visible = State
-    end
+    Default = FOVVisible,
+    Callback = function(Value)
+        FOVVisible = Value
+        FOVCircle.Visible = Value
+    end    
 })
 
-VisualsTab:CreateToggle({
+VisualsTab:AddToggle({
     Name = "BOX ESP",
-    CurrentValue = false,
-    Flag = "BoxToggle",
-    Callback = function(State)
+    Default = false,
+    Callback = function(Value)
         for _, esp in pairs(ESPTable) do
-            if esp.Box then esp.Box.Visible = State end
+            if esp.Box then esp.Box.Visible = Value end
         end
-    end
+    end    
 })
 
-VisualsTab:CreateToggle({
+VisualsTab:AddToggle({
     Name = "HIGHLIGHT ESP",
-    CurrentValue = false,
-    Flag = "HighlightToggle",
-    Callback = function(State)
+    Default = false,
+    Callback = function(Value)
         for _, esp in pairs(ESPTable) do
-            if esp.Highlight then esp.Highlight.Enabled = State end
+            if esp.Highlight then esp.Highlight.Enabled = Value end
         end
-    end
+    end    
 })
 
-VisualsTab:CreateToggle({
+VisualsTab:AddToggle({
     Name = "SKELETON ESP",
-    CurrentValue = SkeletonESP,
-    Flag = "SkeletonToggle",
-    Callback = function(State)
-        SkeletonESP = State
-    end
+    Default = SkeletonESP,
+    Callback = function(Value)
+        SkeletonESP = Value
+    end    
 })
 
-VisualsTab:CreateToggle({
+VisualsTab:AddToggle({
     Name = "HEALTH BAR",
-    CurrentValue = HealthBarESP,
-    Flag = "HealthBarToggle",
-    Callback = function(State)
-        HealthBarESP = State
-    end
+    Default = HealthBarESP,
+    Callback = function(Value)
+        HealthBarESP = Value
+    end    
 })
 
-VisualsTab:CreateToggle({
+VisualsTab:AddToggle({
     Name = "DISTANCE",
-    CurrentValue = DistanceESP,
-    Flag = "DistanceToggle",
-    Callback = function(State)
-        DistanceESP = State
-    end
+    Default = DistanceESP,
+    Callback = function(Value)
+        DistanceESP = Value
+    end    
 })
 
-VisualsTab:CreateToggle({
+VisualsTab:AddToggle({
     Name = "NAME TAGS",
-    CurrentValue = NameTags,
-    Flag = "NameTagToggle",
-    Callback = function(State)
-        NameTags = State
-    end
+    Default = NameTags,
+    Callback = function(Value)
+        NameTags = Value
+    end    
 })
 
-VisualsTab:CreateToggle({
+VisualsTab:AddToggle({
     Name = "THREAT LEVEL",
-    CurrentValue = ThreatLevelESP,
-    Flag = "ThreatToggle",
-    Callback = function(State)
-        ThreatLevelESP = State
-    end
+    Default = ThreatLevelESP,
+    Callback = function(Value)
+        ThreatLevelESP = Value
+    end    
 })
 
-VisualsTab:CreateToggle({
+VisualsTab:AddToggle({
     Name = "WEAPON ESP",
-    CurrentValue = WeaponESP,
-    Flag = "WeaponToggle",
-    Callback = function(State)
-        WeaponESP = State
-    end
+    Default = WeaponESP,
+    Callback = function(Value)
+        WeaponESP = Value
+    end    
 })
 
-VisualsTab:CreateToggle({
+VisualsTab:AddToggle({
     Name = "CHAMS",
-    CurrentValue = ChamsEnabled,
-    Flag = "ChamsToggle",
-    Callback = function(State)
-        ChamsEnabled = State
+    Default = ChamsEnabled,
+    Callback = function(Value)
+        ChamsEnabled = Value
         for player, esp in pairs(ESPTable) do
-            if esp.Cham then esp.Cham.Enabled = State end
+            if esp.Cham then esp.Cham.Enabled = Value end
         end
-    end
+    end    
 })
 
-VisualsTab:CreateColorPicker({
+VisualsTab:AddColorpicker({
     Name = "FOV COLOR",
-    Color = Color3.fromRGB(255, 0, 128),
-    Flag = "FOVColorPicker",
-    Callback = function(Color)
-        FOVCircle.Color = Color
-    end
+    Default = Color3.fromRGB(255, 0, 128),
+    Callback = function(Value)
+        FOVCircle.Color = Value
+    end    
 })
 
--- ADVANCED PLAYER TRACKING (DELTA FIXED)
+-- ADVANCED PLAYER TRACKING
 local ESPTable = {}
 local ThreatLevels = {}
 
@@ -365,7 +326,7 @@ local function CreateESP(player)
     return components
 end
 
--- FIXED WALL CHECK (DELTA COMPATIBLE)
+-- FIXED WALL CHECK
 local function IsVisible(part)
     if not part or not part.Parent then return false end
     if not WallCheck then return true end
@@ -521,77 +482,73 @@ local function CalculatePrediction(target)
     return predictedPosition
 end
 
--- DELTA-FIXED HOOKING SYSTEM
+-- HOOKING SYSTEM
 local oldNamecall
 local hookActive = false
 
 local function SetupHook()
     if hookActive then return true end
     
-    if SafeHook and DeltaCompatibility then
-        -- Delta-friendly hook
-        local mt = getrawmetatable(game)
-        if not mt then return false end
+    local mt = getrawmetatable(game)
+    if not mt then return false end
+    
+    oldNamecall = mt.__namecall
+    setreadonly(mt, false)
+    
+    local hookFunc = function(self, ...)
+        local args = {...}
+        local method = getnamecallmethod()
         
-        oldNamecall = mt.__namecall
-        setreadonly(mt, false)
-        
-        local hookFunc = function(self, ...)
-            local args = {...}
-            local method = getnamecallmethod()
-            
-            if getgenv().SilentAim and tostring(method) == "FindPartOnRayWithIgnoreList" then
-                local target = FindTarget()
-                if target and target.Character then
-                    -- Dynamic target part selection
-                    local actualTargetPart = TargetPart
-                    if TargetPart == "Random" then
-                        local parts = {"Head", "HumanoidRootPart", "Torso"}
-                        actualTargetPart = parts[math.random(1, #parts)]
-                    end
-                    
-                    local targetPart = target.Character:FindFirstChild(actualTargetPart) or target.Character.Head
-                    if not targetPart then return oldNamecall(self, unpack(args)) end
-                    
-                    local predictedPosition = CalculatePrediction(target)
-                    
-                    -- Smoothing algorithm
-                    local camera = workspace.CurrentCamera
-                    if not camera then return oldNamecall(self, unpack(args)) end
-                    
-                    local smoothedPosition = camera.CFrame.Position:Lerp(predictedPosition, Smoothing)
-                    
-                    -- Auto-shoot implementation
-                    if AutoShoot then
-                        spawn(function()
-                            local localChar = game.Players.LocalPlayer.Character
-                            if localChar then
-                                local tool = localChar:FindFirstChildOfClass("Tool")
-                                if tool then
-                                    tool:Activate()
-                                end
-                            end
-                        end)
-                    end
-                    
-                    return targetPart, smoothedPosition
+        if SilentAim and tostring(method) == "FindPartOnRayWithIgnoreList" then
+            local target = FindTarget()
+            if target and target.Character then
+                -- Dynamic target part selection
+                local actualTargetPart = TargetPart
+                if TargetPart == "Random" then
+                    local parts = {"Head", "HumanoidRootPart", "Torso"}
+                    actualTargetPart = parts[math.random(1, #parts)]
                 end
+                
+                local targetPart = target.Character:FindFirstChild(actualTargetPart) or target.Character.Head
+                if not targetPart then return oldNamecall(self, unpack(args)) end
+                
+                local predictedPosition = CalculatePrediction(target)
+                
+                -- Smoothing algorithm
+                local camera = workspace.CurrentCamera
+                if not camera then return oldNamecall(self, unpack(args)) end
+                
+                local smoothedPosition = camera.CFrame.Position:Lerp(predictedPosition, Smoothing)
+                
+                -- Auto-shoot implementation
+                if AutoShoot then
+                    spawn(function()
+                        local localChar = game.Players.LocalPlayer.Character
+                        if localChar then
+                            local tool = localChar:FindFirstChildOfClass("Tool")
+                            if tool then
+                                tool:Activate()
+                            end
+                        end
+                    end)
+                end
+                
+                return targetPart, smoothedPosition
             end
-            return oldNamecall(self, unpack(args))
         end
-        
-        -- استخدام newcclosure إذا كان متاحًا
-        if newcclosure then
-            mt.__namecall = newcclosure(hookFunc)
-        else
-            mt.__namecall = hookFunc
-        end
-        
-        setreadonly(mt, true)
-        hookActive = true
-        return true
+        return oldNamecall(self, unpack(args))
     end
-    return false
+    
+    -- Use newcclosure if available
+    if newcclosure then
+        mt.__namecall = newcclosure(hookFunc)
+    else
+        mt.__namecall = hookFunc
+    end
+    
+    setreadonly(mt, true)
+    hookActive = true
+    return true
 end
 
 -- DAMAGE TRACKER FOR THREAT LEVELS
@@ -619,7 +576,7 @@ local function TrackDamage()
     end)
 end
 
--- FIXED RENDER LOOP (DELTA OPTIMIZED)
+-- FIXED RENDER LOOP
 local LastUpdate = tick()
 local UpdateInterval = LightweightMode and 0.1 or 0.03
 
@@ -675,7 +632,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
                 if esp.Box then
                     esp.Box.Size = boxSize
                     esp.Box.Position = boxPos
-                    esp.Box.Visible = VisualsTab:GetElement("BoxToggle").CurrentValue
+                    esp.Box.Visible = VisualsTab:GetActiveToggle("BOX ESP")
                 end
                 
                 -- HEALTH BAR
@@ -769,7 +726,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
                 
                 -- HIGHLIGHT
                 if esp.Highlight then
-                    esp.Highlight.Enabled = VisualsTab:GetElement("HighlightToggle").CurrentValue
+                    esp.Highlight.Enabled = VisualsTab:GetActiveToggle("HIGHLIGHT ESP")
                 end
                 
                 -- CHAMS
@@ -793,50 +750,27 @@ game:GetService("RunService").RenderStepped:Connect(function()
     end
 end)
 
--- INITIALIZATION AND ERROR HANDLING
-local function SafeInitialize()
-    -- Setup hooks
-    local hookSuccess = SetupHook()
-    
-    -- Initialize damage tracking
-    TrackDamage()
-    
-    Window:Notify({
-        Title = hookSuccess and "👁️ HOOK SUCCESS" or "⚠️ HOOK FAILED",
-        Content = hookSuccess and "Delta-compatible hook installed" or "Using fallback method",
-        Duration = 6,
-        Image = 4483362458,
-    })
-    
-    -- Lightweight mode notification
-    if LightweightMode then
-        Window:Notify({
-            Title = "⚡ LIGHTWEIGHT MODE",
-            Content = "Reduced ESP updates for better performance",
-            Duration = 4,
-        })
+-- INITIALIZATION
+SetupHook()
+TrackDamage()
+
+-- Initialize ESP for existing players
+for _, player in ipairs(game.Players:GetPlayers()) do
+    if player ~= game.Players.LocalPlayer and player.Character then
+        ESPTable[player] = CreateESP(player)
     end
 end
 
+OrionLib:MakeNotification({
+    Name = "👁️ QUANTUM PHANTOM ACTIVE",
+    Content = "Elite ESP & Silent Aim injected",
+    Image = "rbxassetid://4483362458",
+    Time = 6
+})
+
 -- DEBUG MODE
-print("Phantom Hunter v3.3 - تم التفعيل بنجاح!")
+print("Phantom Hunter v3.4 - تم التفعيل بنجاح!")
 warn("الحالة: جاهز للتشغيل")
 
--- DELTA EXECUTOR WORKAROUND
-local success, err = pcall(SafeInitialize)
-if not success then
-    Window:Notify({
-        Title = "⚠️ INITIALIZATION ERROR",
-        Content = "Falling back to basic mode: "..tostring(err),
-        Duration = 8,
-    })
-    
-    -- Attempt basic initialization
-    pcall(function()
-        SetupHook()
-        TrackDamage()
-    end)
-end
-
 -- UNHOOK ON SCRIPT TERMINATION
-Rayfield:DestroyOnClose()
+OrionLib:Init()
