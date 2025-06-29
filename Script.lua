@@ -1,11 +1,29 @@
--- PHANTOM HUNTER v3.2 - DELTA EXECUTOR OPTIMIZED
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+-- PHANTOM HUNTER v3.3 - DELTA EXECUTOR FIXED
+local Rayfield, rayfieldError = pcall(function()
+    return loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+end)
+
+if not Rayfield then
+    warn("فشل تحميل Rayfield: " .. tostring(rayfieldError))
+    return
+end
+
 local Window = Rayfield:CreateWindow({
     Name = "👁️ PHANTOM HUNTER ELITE",
     LoadingTitle = "DELTA EXECUTOR COMPATIBLE",
     LoadingSubtitle = "root@darknet:~$ sudo inject quantum_payload",
     ConfigurationSaving = {Enabled = true, FolderName = "PhantomHunter", FileName = "DeltaConfig"}
 })
+
+-- التحقق من دعم مكتبة الرسم
+if not Drawing then
+    Window:Notify({
+        Title = "⚠️  راسل مطورخطأ في الدعم",
+        Content = "جهازك لا يدعم مكتبة Drawing!",
+        Duration = 8,
+    })
+    return
+end
 
 -- QUANTUM AIMBOT ENGINE (DELTA FIXED)
 local FOVCircle = Drawing.new("Circle")
@@ -355,13 +373,16 @@ local function IsVisible(part)
     local camera = workspace.CurrentCamera
     if not camera then return false end
     
+    local localPlayer = game.Players.LocalPlayer
+    if not localPlayer or not localPlayer.Character then return false end
+
     local origin = camera.CFrame.Position
     local _, onScreen = camera:WorldToViewportPoint(part.Position)
     if not onScreen then return false end
 
     local raycastParams = RaycastParams.new()
     raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
-    raycastParams.FilterDescendantsInstances = {game.Players.LocalPlayer.Character}
+    raycastParams.FilterDescendantsInstances = {localPlayer.Character}
     raycastParams.IgnoreWater = true
     
     local result = workspace:Raycast(origin, part.Position - origin, raycastParams)
@@ -515,7 +536,7 @@ local function SetupHook()
         oldNamecall = mt.__namecall
         setreadonly(mt, false)
         
-        mt.__namecall = newcclosure(function(self, ...)
+        local hookFunc = function(self, ...)
             local args = {...}
             local method = getnamecallmethod()
             
@@ -557,7 +578,14 @@ local function SetupHook()
                 end
             end
             return oldNamecall(self, unpack(args))
-        end)
+        end
+        
+        -- استخدام newcclosure إذا كان متاحًا
+        if newcclosure then
+            mt.__namecall = newcclosure(hookFunc)
+        else
+            mt.__namecall = hookFunc
+        end
         
         setreadonly(mt, true)
         hookActive = true
@@ -572,7 +600,9 @@ local function TrackDamage()
     if not localPlayer then return end
     
     localPlayer.CharacterAdded:Connect(function(char)
-        local humanoid = char:WaitForChild("Humanoid")
+        local humanoid = char:FindFirstChild("Humanoid")
+        if not humanoid then return end
+        
         humanoid:GetPropertyChangedSignal("Health"):Connect(function()
             if humanoid.Health < humanoid.MaxHealth then
                 -- Find who damaged us
@@ -763,7 +793,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
     end
 end)
 
--- INITIALIZATION FIXES FOR DELTA
+-- INITIALIZATION AND ERROR HANDLING
 local function SafeInitialize()
     -- Setup hooks
     local hookSuccess = SetupHook()
@@ -771,7 +801,7 @@ local function SafeInitialize()
     -- Initialize damage tracking
     TrackDamage()
     
-    Rayfield:Notify({
+    Window:Notify({
         Title = hookSuccess and "👁️ HOOK SUCCESS" or "⚠️ HOOK FAILED",
         Content = hookSuccess and "Delta-compatible hook installed" or "Using fallback method",
         Duration = 6,
@@ -780,7 +810,7 @@ local function SafeInitialize()
     
     -- Lightweight mode notification
     if LightweightMode then
-        Rayfield:Notify({
+        Window:Notify({
             Title = "⚡ LIGHTWEIGHT MODE",
             Content = "Reduced ESP updates for better performance",
             Duration = 4,
@@ -788,10 +818,14 @@ local function SafeInitialize()
     end
 end
 
+-- DEBUG MODE
+print("Phantom Hunter v3.3 - تم التفعيل بنجاح!")
+warn("الحالة: جاهز للتشغيل")
+
 -- DELTA EXECUTOR WORKAROUND
 local success, err = pcall(SafeInitialize)
 if not success then
-    Rayfield:Notify({
+    Window:Notify({
         Title = "⚠️ INITIALIZATION ERROR",
         Content = "Falling back to basic mode: "..tostring(err),
         Duration = 8,
