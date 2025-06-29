@@ -1,12 +1,13 @@
--- PHANTOM HUNTER v4.3 - إصلاحات نهائية
+
+-- PHANTOM HUNTER v5.0 - Optimized for iPhone X
 local OrionLib = (function()
-    -- مكتبة أوريون المدمجة - إصدار محسّن للهواتف
+    -- Enhanced Embedded Orion Library
     local OrionLib = {}
     local input = game:GetService("UserInputService")
     local run = game:GetService("RunService")
     local coreGui = game:GetService("CoreGui")
     
-    -- إنشاء واجهة المستخدم الرئيسية
+    -- Create main UI
     local PhantomGUI = Instance.new("ScreenGui")
     PhantomGUI.Name = "PhantomGUI"
     PhantomGUI.ResetOnSpawn = false
@@ -14,50 +15,49 @@ local OrionLib = (function()
     PhantomGUI.DisplayOrder = 999
     PhantomGUI.Parent = coreGui
     
-    -- الإطار الرئيسي بحجم مناسب للهواتف
+    -- Main Frame with optimized size for iPhone X
     local MainFrame = Instance.new("Frame")
     MainFrame.Name = "MainFrame"
-    MainFrame.Size = UDim2.new(0, 320, 0, 400)  -- حجم أصغر للهواتف
-    MainFrame.Position = UDim2.new(0.5, -160, 0.5, -200)  -- في المنتصف
+    MainFrame.Size = UDim2.new(0, 300, 0, 350)
+    MainFrame.Position = UDim2.new(0.5, -150, 0.5, -175)
     MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
     MainFrame.BackgroundTransparency = 0.1
     MainFrame.BorderSizePixel = 0
     MainFrame.ClipsDescendants = true
-    MainFrame.Visible = false  -- مخفي عند البدء
+    MainFrame.Visible = false
     MainFrame.Parent = PhantomGUI
 
-    -- الزاوية العلوية
+    -- Topbar with modern design
     local Topbar = Instance.new("Frame")
     Topbar.Name = "Topbar"
-    Topbar.Size = UDim2.new(1, 0, 0, 30)  -- ارتفاع أقل
+    Topbar.Size = UDim2.new(1, 0, 0, 30)
     Topbar.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
     Topbar.BorderSizePixel = 0
     Topbar.Parent = MainFrame
 
     local Title = Instance.new("TextLabel")
     Title.Name = "Title"
-    Title.Text = "👁️ PHANTOM"
+    Title.Text = "👁️ PHANTOM HUNTER"
     Title.Font = Enum.Font.GothamBold
-    Title.TextSize = 14  -- حجم خط أصغر
+    Title.TextSize = 14
     Title.TextColor3 = Color3.fromRGB(255, 0, 128)
     Title.BackgroundTransparency = 1
     Title.Position = UDim2.new(0, 10, 0, 0)
-    Title.Size = UDim2.new(0, 150, 1, 0)
+    Title.Size = UDim2.new(0, 200, 1, 0)
     Title.Parent = Topbar
 
-    -- زر الإغلاق
-    local CloseButton = Instance.new("TextButton")
+    -- Close Button with modern icon
+    local CloseButton = Instance.new("ImageButton")
     CloseButton.Name = "CloseButton"
-    CloseButton.Text = "X"
-    CloseButton.Font = Enum.Font.GothamBold
-    CloseButton.TextSize = 16
-    CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+    CloseButton.Image = "rbxassetid://3926305904"
+    CloseButton.ImageRectOffset = Vector2.new(924, 724)
+    CloseButton.ImageRectSize = Vector2.new(36, 36)
     CloseButton.BackgroundTransparency = 1
     CloseButton.Position = UDim2.new(1, -30, 0.5, -10)
-    CloseButton.Size = UDim2.new(0, 25, 0, 20)
+    CloseButton.Size = UDim2.new(0, 20, 0, 20)
     CloseButton.Parent = Topbar
 
-    -- منطقة التبويبات
+    -- Tab Container with smooth scrolling
     local TabContainer = Instance.new("Frame")
     TabContainer.Name = "TabContainer"
     TabContainer.Size = UDim2.new(1, 0, 1, -30)
@@ -65,54 +65,41 @@ local OrionLib = (function()
     TabContainer.BackgroundTransparency = 1
     TabContainer.Parent = MainFrame
 
-    -- أزرار التبويبات
-    local TabButtons = Instance.new("Frame")
+    -- Tab Buttons with modern styling
+    local TabButtons = Instance.new("ScrollingFrame")
     TabButtons.Name = "TabButtons"
-    TabButtons.Size = UDim2.new(0, 100, 1, 0)  -- عرض أقل
+    TabButtons.Size = UDim2.new(0, 90, 1, 0)
     TabButtons.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
     TabButtons.BorderSizePixel = 0
+    TabButtons.ScrollBarThickness = 3
     TabButtons.Parent = TabContainer
 
     local TabListLayout = Instance.new("UIListLayout")
     TabListLayout.Parent = TabButtons
     TabListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    TabListLayout.Padding = UDim.new(0, 3)  -- تباعد أقل
+    TabListLayout.Padding = UDim.new(0, 3)
     TabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-    -- مجلد التبويبات
+    -- Tabs Folder
     local TabsFolder = Instance.new("Folder")
     TabsFolder.Name = "Tabs"
     TabsFolder.Parent = TabContainer
 
-    -- زر القائمة الصغيرة
-    local MiniMenuButton = Instance.new("TextButton")
-    MiniMenuButton.Name = "MiniMenuButton"
-    MiniMenuButton.Text = "☰"
-    MiniMenuButton.Font = Enum.Font.GothamBold
-    MiniMenuButton.TextSize = 18
-    MiniMenuButton.TextColor3 = Color3.fromRGB(255, 0, 128)
-    MiniMenuButton.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
-    MiniMenuButton.BorderSizePixel = 0
-    MiniMenuButton.Size = UDim2.new(0, 40, 0, 40)
-    MiniMenuButton.Position = UDim2.new(0, 10, 0, 10)
-    MiniMenuButton.Visible = true
-    MiniMenuButton.Parent = PhantomGUI
+    -- Modern Floating Menu Button
+    local MenuButton = Instance.new("ImageButton")
+    MenuButton.Name = "MenuButton"
+    MenuButton.Image = "rbxassetid://3926307971"
+    MenuButton.ImageRectOffset = Vector2.new(4, 844)
+    MenuButton.ImageRectSize = Vector2.new(36, 36)
+    MenuButton.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+    MenuButton.BackgroundTransparency = 0.5
+    MenuButton.BorderSizePixel = 0
+    MenuButton.Size = UDim2.new(0, 40, 0, 40)
+    MenuButton.Position = UDim2.new(0, 10, 0, 10)
+    MenuButton.Visible = true
+    MenuButton.Parent = PhantomGUI
     
-    -- قائمة صغيرة تظهر عند النقر على الزر
-    local MiniMenu = Instance.new("Frame")
-    MiniMenu.Name = "MiniMenu"
-    MiniMenu.Size = UDim2.new(0, 150, 0, 200)
-    MiniMenu.Position = UDim2.new(0, 50, 0, 10)
-    MiniMenu.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
-    MiniMenu.BorderSizePixel = 0
-    MiniMenu.Visible = false
-    MiniMenu.Parent = PhantomGUI
-    
-    local MenuList = Instance.new("UIListLayout")
-    MenuList.Parent = MiniMenu
-    MenuList.Padding = UDim.new(0, 5)
-    
-    -- جعل الإطار قابل للسحب
+    -- Make UI draggable
     local function MakeDraggable(topbar, frame)
         local dragging = false
         local dragInput, dragStart, startPos
@@ -146,15 +133,15 @@ local OrionLib = (function()
     end
 
     MakeDraggable(Topbar, MainFrame)
-    MakeDraggable(MiniMenuButton, MiniMenuButton)
+    MakeDraggable(MenuButton, MenuButton)
 
-    -- التحكم برؤية الواجهة
+    -- UI Visibility Control
     CloseButton.MouseButton1Click:Connect(function()
         MainFrame.Visible = false
     end)
     
-    MiniMenuButton.MouseButton1Click:Connect(function()
-        MiniMenu.Visible = not MiniMenu.Visible
+    MenuButton.MouseButton1Click:Connect(function()
+        MainFrame.Visible = not MainFrame.Visible
     end)
 
     input.InputBegan:Connect(function(key)
@@ -163,58 +150,32 @@ local OrionLib = (function()
         end
     end)
     
-    -- إضافة خيارات للقائمة الصغيرة
-    local function AddMiniMenuItem(name, callback)
-        local Button = Instance.new("TextButton")
-        Button.Name = name
-        Button.Text = "  " .. name
-        Button.Font = Enum.Font.Gotham
-        Button.TextSize = 14
-        Button.TextColor3 = Color3.fromRGB(200, 200, 200)
-        Button.TextXAlignment = Enum.TextXAlignment.Left
-        Button.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-        Button.BorderSizePixel = 0
-        Button.Size = UDim2.new(0.9, 0, 0, 35)
-        Button.Parent = MiniMenu
-        
-        Button.MouseButton1Click:Connect(callback)
-    end
-
-    AddMiniMenuItem("فتح القائمة", function()
-        MainFrame.Visible = true
-        MiniMenu.Visible = false
-    end)
-    
-    AddMiniMenuItem("إيقاف السكربت", function()
-        PhantomGUI:Destroy()
-    end)
-
-    -- وظائف المكتبة
+    -- Library Functions
     function OrionLib:MakeWindow(options)
         local window = {}
         
         function window:MakeTab(options)
             local tabName = options.Name or "Tab"
             
-            -- زر التبويب
+            -- Tab Button with modern style
             local TabButton = Instance.new("TextButton")
             TabButton.Name = tabName
             TabButton.Text = "  " .. tabName
             TabButton.Font = Enum.Font.Gotham
-            TabButton.TextSize = 12  -- حجم خط أصغر
+            TabButton.TextSize = 12
             TabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
             TabButton.TextXAlignment = Enum.TextXAlignment.Left
             TabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
             TabButton.BorderSizePixel = 0
-            TabButton.Size = UDim2.new(0.9, 0, 0, 30)  -- ارتفاع أقل
+            TabButton.Size = UDim2.new(0.9, 0, 0, 30)
             TabButton.LayoutOrder = #TabButtons:GetChildren()
             TabButton.Parent = TabButtons
 
-            -- إطار التبويب
+            -- Tab Content Frame
             local TabFrame = Instance.new("ScrollingFrame")
             TabFrame.Name = tabName
-            TabFrame.Size = UDim2.new(1, -110, 1, 0)  -- عرض أكبر للمحتوى
-            TabFrame.Position = UDim2.new(0, 110, 0, 0)
+            TabFrame.Size = UDim2.new(1, -100, 1, 0)
+            TabFrame.Position = UDim2.new(0, 100, 0, 0)
             TabFrame.BackgroundTransparency = 1
             TabFrame.Visible = false
             TabFrame.Parent = TabsFolder
@@ -223,10 +184,10 @@ local OrionLib = (function()
 
             local TabList = Instance.new("UIListLayout")
             TabList.Parent = TabFrame
-            TabList.Padding = UDim.new(0, 5)  -- تباعد أقل
+            TabList.Padding = UDim.new(0, 5)
             TabList.SortOrder = Enum.SortOrder.LayoutOrder
 
-            -- إظهار/إخفاء التبويب عند النقر
+            -- Show/Hide Tab
             TabButton.MouseButton1Click:Connect(function()
                 for _, tab in ipairs(TabsFolder:GetChildren()) do
                     if tab:IsA("ScrollingFrame") then
@@ -236,14 +197,14 @@ local OrionLib = (function()
                 TabFrame.Visible = true
             end)
 
-            -- تبويب افتراضي
+            -- Default Tab
             if #TabsFolder:GetChildren() == 1 then
                 TabFrame.Visible = true
             end
 
             local tab = {}
             
-            -- إضافة زر
+            -- Add Button with modern style
             function tab:AddButton(options)
                 local btnName = options.Name or "Button"
                 local callback = options.Callback or function() end
@@ -252,11 +213,11 @@ local OrionLib = (function()
                 Button.Name = btnName
                 Button.Text = btnName
                 Button.Font = Enum.Font.Gotham
-                Button.TextSize = 12  -- حجم خط أصغر
+                Button.TextSize = 12
                 Button.TextColor3 = Color3.fromRGB(255, 255, 255)
                 Button.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
                 Button.BorderSizePixel = 0
-                Button.Size = UDim2.new(0.95, 0, 0, 30)  -- ارتفاع أقل
+                Button.Size = UDim2.new(0.95, 0, 0, 30)
                 Button.LayoutOrder = #TabFrame:GetChildren()
                 Button.Parent = TabFrame
                 
@@ -265,7 +226,7 @@ local OrionLib = (function()
                 TabFrame.CanvasSize = UDim2.new(0, 0, 0, TabList.AbsoluteContentSize.Y + 40)
             end
             
-            -- إضافة تبديل
+            -- Add Toggle with modern style
             function tab:AddToggle(options)
                 local toggleName = options.Name or "Toggle"
                 local default = options.Default or false
@@ -274,7 +235,7 @@ local OrionLib = (function()
                 local ToggleFrame = Instance.new("Frame")
                 ToggleFrame.Name = toggleName
                 ToggleFrame.BackgroundTransparency = 1
-                ToggleFrame.Size = UDim2.new(0.95, 0, 0, 30)  -- ارتفاع أقل
+                ToggleFrame.Size = UDim2.new(0.95, 0, 0, 30)
                 ToggleFrame.LayoutOrder = #TabFrame:GetChildren()
                 ToggleFrame.Parent = TabFrame
                 
@@ -282,7 +243,7 @@ local OrionLib = (function()
                 ToggleButton.Name = "ToggleButton"
                 ToggleButton.Text = "  " .. toggleName
                 ToggleButton.Font = Enum.Font.Gotham
-                ToggleButton.TextSize = 12  -- حجم خط أصغر
+                ToggleButton.TextSize = 12
                 ToggleButton.TextColor3 = Color3.fromRGB(200, 200, 200)
                 ToggleButton.TextXAlignment = Enum.TextXAlignment.Left
                 ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
@@ -292,7 +253,7 @@ local OrionLib = (function()
                 
                 local ToggleIndicator = Instance.new("Frame")
                 ToggleIndicator.Name = "Indicator"
-                ToggleIndicator.Size = UDim2.new(0, 18, 0, 18)  -- حجم أصغر
+                ToggleIndicator.Size = UDim2.new(0, 18, 0, 18)
                 ToggleIndicator.Position = UDim2.new(1, -25, 0.5, -9)
                 ToggleIndicator.BackgroundColor3 = default and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(100, 100, 100)
                 ToggleIndicator.BorderSizePixel = 0
@@ -316,7 +277,7 @@ local OrionLib = (function()
                 }
             end
             
-            -- إضافة منزلق
+            -- Add Slider with modern style
             function tab:AddSlider(options)
                 local sliderName = options.Name or "Slider"
                 local min = options.Min or 0
@@ -327,7 +288,7 @@ local OrionLib = (function()
                 local SliderFrame = Instance.new("Frame")
                 SliderFrame.Name = sliderName
                 SliderFrame.BackgroundTransparency = 1
-                SliderFrame.Size = UDim2.new(0.95, 0, 0, 50)  -- ارتفاع أقل
+                SliderFrame.Size = UDim2.new(0.95, 0, 0, 50)
                 SliderFrame.LayoutOrder = #TabFrame:GetChildren()
                 SliderFrame.Parent = TabFrame
                 
@@ -335,7 +296,7 @@ local OrionLib = (function()
                 SliderTitle.Name = "Title"
                 SliderTitle.Text = "  " .. sliderName
                 SliderTitle.Font = Enum.Font.Gotham
-                SliderTitle.TextSize = 12  -- حجم خط أصغر
+                SliderTitle.TextSize = 12
                 SliderTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
                 SliderTitle.TextXAlignment = Enum.TextXAlignment.Left
                 SliderTitle.BackgroundTransparency = 1
@@ -361,7 +322,7 @@ local OrionLib = (function()
                 SliderValue.Name = "Value"
                 SliderValue.Text = tostring(default)
                 SliderValue.Font = Enum.Font.Gotham
-                SliderValue.TextSize = 12  -- حجم خط أصغر
+                SliderValue.TextSize = 12
                 SliderValue.TextColor3 = Color3.fromRGB(255, 255, 255)
                 SliderValue.BackgroundTransparency = 1
                 SliderValue.Position = UDim2.new(0.5, 0, 0, 0)
@@ -415,244 +376,408 @@ local OrionLib = (function()
     return OrionLib
 end)()
 
--- ===== نظام التصويب الذكي =====
--- دائرة مجال الرؤية (فارغة من المنتصف)
+-- ===== AIMBOT CORE =====
+-- FOV Circle with improved visuals
 local FOVCircle = Drawing.new("Circle")
 FOVCircle.Visible = true
 FOVCircle.Radius = 80
 FOVCircle.Color = Color3.fromRGB(255, 0, 128)
 FOVCircle.Thickness = 2
-FOVCircle.Transparency = 1  -- شفافية الداخل
-FOVCircle.Filled = false    -- دائرة مجوفة
+FOVCircle.Transparency = 1
+FOVCircle.Filled = false
 FOVCircle.Position = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2, workspace.CurrentCamera.ViewportSize.Y/2)
 
--- إعدادات التصويب
-local Prediction = 0.165
-local Smoothing = 0.35
-local TargetPart = "HumanoidRootPart"
-local TeamCheck = true
-local WallCheck = true
-local AutoShoot = false
-local AimMode = "Closest to Crosshair"
-local FOVVisible = true
+-- Optimized settings with proper defaults
+local settings = {
+    Prediction = 0.165,
+    Smoothing = 0.35,
+    TargetPart = "HumanoidRootPart",
+    TeamCheck = true,
+    WallCheck = true,
+    AutoShoot = false,
+    AimMode = "Closest to Crosshair",
+    FOVVisible = true,
+    HealthBarESP = true,
+    DistanceESP = true,
+    NameTags = true,
+    HighlightESP = true, -- Using Highlight instead of Box ESP
+    SkeletonESP = false,
+    WeaponESP = false,
+    ThreatLevelESP = false,
+    LightweightMode = true, -- Enabled by default for mobile
+    SilentAim = false,
+    Active = false
+}
 
--- إعدادات الـ ESP
-local HealthBarESP = true
-local DistanceESP = true
-local NameTags = true
-local ChamsEnabled = false
-local SkeletonESP = false
-local WeaponESP = false
-local ThreatLevelESP = false
-
--- إعدادات الأداء
-local LightweightMode = false
-local SilentAim = false
-
--- إنشاء النافذة
+-- Create window with modern design
 local Window = OrionLib:MakeWindow({
     Name = "👁️ PHANTOM HUNTER",
 })
 
--- تبويب القتال
+-- Combat Tab
 local CombatTab = Window:MakeTab({
-    Name = "🔥 القتال",
+    Name = "🔥 AIMBOT",
 })
 
-CombatTab:AddToggle({
-    Name = "التصويب الذكي",
+local AimToggle = CombatTab:AddToggle({
+    Name = "ACTIVATE AIMBOT",
     Default = false,
     Callback = function(Value)
-        SilentAim = Value
+        settings.SilentAim = Value
+        settings.Active = Value
+        if Value then
+            OrionLib:MakeNotification({
+                Name = "AIMBOT ACTIVATED",
+                Content = "Quantum targeting system engaged",
+                Image = "rbxassetid://3926305904",
+                Time = 3
+            })
+        end
     end    
 })
 
 CombatTab:AddToggle({
-    Name = "إطلاق نار تلقائي",
-    Default = AutoShoot,
+    Name = "AUTO SHOOT",
+    Default = settings.AutoShoot,
     Callback = function(Value)
-        AutoShoot = Value
+        settings.AutoShoot = Value
     end    
 })
 
 CombatTab:AddSlider({
-    Name = "توقع الحركة",
+    Name = "PREDICTION",
     Min = 0.01,
     Max = 0.5,
-    Default = Prediction,
+    Default = settings.Prediction,
     Callback = function(Value)
-        Prediction = Value
+        settings.Prediction = Value
     end    
 })
 
 CombatTab:AddSlider({
-    Name = "السلاسة",
+    Name = "SMOOTHING",
     Min = 0.01,
     Max = 1.0,
-    Default = Smoothing,
+    Default = settings.Smoothing,
     Callback = function(Value)
-        Smoothing = Value
+        settings.Smoothing = Value
     end    
 })
 
 CombatTab:AddToggle({
-    Name = "تصويب عبر الحائط",
-    Default = WallCheck,
+    Name = "WALL CHECK",
+    Default = settings.WallCheck,
     Callback = function(Value)
-        WallCheck = Value
+        settings.WallCheck = Value
     end    
 })
 
 CombatTab:AddToggle({
-    Name = "فلترة الفريق",
-    Default = TeamCheck,
+    Name = "TEAM CHECK",
+    Default = settings.TeamCheck,
     Callback = function(Value)
-        TeamCheck = Value
+        settings.TeamCheck = Value
     end    
 })
 
 CombatTab:AddSlider({
-    Name = "حجم مجال الرؤية",
+    Name = "FOV SIZE",
     Min = 20,
-    Max = 300,  -- أقصى حجم أقل للهواتف
+    Max = 300,
     Default = 80,
     Callback = function(Value)
         FOVCircle.Radius = Value
     end    
 })
 
--- تبويب المرئيات
+-- Visuals Tab
 local VisualsTab = Window:MakeTab({
-    Name = "👁️ المرئيات",
+    Name = "👁️ VISUALS",
 })
 
 VisualsTab:AddToggle({
-    Name = "إظهار مجال الرؤية",
-    Default = FOVVisible,
+    Name = "SHOW FOV",
+    Default = settings.FOVVisible,
     Callback = function(Value)
-        FOVVisible = Value
+        settings.FOVVisible = Value
         FOVCircle.Visible = Value
     end    
 })
 
 VisualsTab:AddToggle({
-    Name = "مربع ESP",
-    Default = false,
+    Name = "HIGHLIGHT ESP",
+    Default = settings.HighlightESP,
     Callback = function(Value)
-        -- تمكين/تعطيل ESP
+        settings.HighlightESP = Value
     end    
 })
 
--- ===== نظام التتبع والتصويب =====
--- جدول تتبع اللاعبين
-local ESPTable = {}
-local ThreatLevels = {}
+VisualsTab:AddToggle({
+    Name = "DISTANCE",
+    Default = settings.DistanceESP,
+    Callback = function(Value)
+        settings.DistanceESP = Value
+    end    
+})
 
--- إنشاء عناصر ESP للاعب
-local function CreateESP(player)
-    local esp = {}
+VisualsTab:AddToggle({
+    Name = "NAMES",
+    Default = settings.NameTags,
+    Callback = function(Value)
+        settings.NameTags = Value
+    end    
+})
+
+-- ===== PLAYER HIGHLIGHT SYSTEM =====
+local highlightCache = {}
+local characterConnections = {}
+
+local function createHighlight(player)
+    if highlightCache[player] then return end
     
-    -- مربع ESP
-    esp.Box = Drawing.new("Square")
-    esp.Box.Visible = false
-    esp.Box.Color = Color3.new(1, 0, 0)
-    esp.Box.Thickness = 1
-    esp.Box.Filled = false
+    local highlight = Instance.new("Highlight")
+    highlight.Name = player.Name .. "_Highlight"
+    highlight.OutlineColor = Color3.new(1, 0, 0)
+    highlight.FillColor = Color3.new(1, 0, 0)
+    highlight.FillTransparency = 0.8
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Enabled = false
     
-    -- نص المسافة
-    esp.Distance = Drawing.new("Text")
-    esp.Distance.Visible = false
-    esp.Distance.Color = Color3.new(1, 1, 1)
-    esp.Distance.Size = 14
-    esp.Distance.Center = true
+    highlightCache[player] = highlight
     
-    -- نص الاسم
-    esp.Name = Drawing.new("Text")
-    esp.Name.Visible = false
-    esp.Name.Color = Color3.new(1, 1, 1)
-    esp.Name.Size = 16
-    esp.Name.Center = true
+    -- Handle character added
+    local function onCharacterAdded(character)
+        highlight.Adornee = character
+        highlight.Enabled = settings.HighlightESP
+    end
     
-    return esp
+    -- Handle character removal
+    local function onCharacterRemoving()
+        highlight.Adornee = nil
+        highlight.Enabled = false
+    end
+    
+    -- Connect events
+    if player.Character then
+        onCharacterAdded(player.Character)
+    end
+    
+    characterConnections[player] = {
+        Added = player.CharacterAdded:Connect(onCharacterAdded),
+        Removing = player.CharacterRemoving:Connect(onCharacterRemoving)
+    }
+    
+    highlight.Parent = game.CoreGui
 end
 
--- تحديث ESP
-local function UpdateESP()
-    for player, esp in pairs(ESPTable) do
-        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            local rootPart = player.Character.HumanoidRootPart
-            local position, onScreen = workspace.CurrentCamera:WorldToViewportPoint(rootPart.Position)
+local function removeHighlight(player)
+    if highlightCache[player] then
+        highlightCache[player]:Destroy()
+        highlightCache[player] = nil
+    end
+    
+    if characterConnections[player] then
+        characterConnections[player].Added:Disconnect()
+        characterConnections[player].Removing:Disconnect()
+        characterConnections[player] = nil
+    end
+end
+
+-- Player management
+game.Players.PlayerAdded:Connect(function(player)
+    createHighlight(player)
+end)
+
+game.Players.PlayerRemoving:Connect(function(player)
+    removeHighlight(player)
+end)
+
+for _, player in ipairs(game.Players:GetPlayers()) do
+    if player ~= game.Players.LocalPlayer then
+        createHighlight(player)
+    end
+end
+
+-- Update highlights
+local function updateHighlights()
+    for player, highlight in pairs(highlightCache) do
+        if player and player.Parent and highlight then
+            highlight.Enabled = settings.HighlightESP
             
-            if onScreen then
-                -- حساب حجم المربع
-                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - rootPart.Position).Magnitude
-                local scale = 1000 / distance
-                local size = Vector2.new(scale * 2, scale * 3)
-                local position2D = Vector2.new(position.X - scale, position.Y - scale * 1.5)
-                
-                -- تحديث المربع
-                esp.Box.Size = size
-                esp.Box.Position = position2D
-                esp.Box.Visible = true
-                
-                -- تحديث المسافة
-                esp.Distance.Text = math.floor(distance) .. "m"
-                esp.Distance.Position = Vector2.new(position.X, position.Y + size.Y / 2 + 5)
-                esp.Distance.Visible = true
-                
-                -- تحديث الاسم
-                esp.Name.Text = player.Name
-                esp.Name.Position = Vector2.new(position.X, position.Y - size.Y / 2 - 15)
-                esp.Name.Visible = true
+            -- Update color based on team
+            if settings.TeamCheck and player.Team == game.Players.LocalPlayer.Team then
+                highlight.OutlineColor = Color3.new(0, 1, 0)
+                highlight.FillColor = Color3.new(0, 1, 0)
             else
-                esp.Box.Visible = false
-                esp.Distance.Visible = false
-                esp.Name.Visible = false
+                highlight.OutlineColor = Color3.new(1, 0, 0)
+                highlight.FillColor = Color3.new(1, 0, 0)
             end
         end
     end
 end
 
--- إضافة لاعب جديد
-game.Players.PlayerAdded:Connect(function(player)
-    ESPTable[player] = CreateESP(player)
-end)
+-- ===== OPTIMIZED AIMBOT SYSTEM =====
+local targetCache = {}
+local lastTarget = nil
 
--- إزالة لاعب
-game.Players.PlayerRemoving:Connect(function(player)
-    if ESPTable[player] then
-        ESPTable[player].Box:Remove()
-        ESPTable[player].Distance:Remove()
-        ESPTable[player].Name:Remove()
-        ESPTable[player] = nil
-    end
-end)
+local function isVisible(part)
+    if not settings.WallCheck then return true end
+    
+    local camera = workspace.CurrentCamera
+    local origin = camera.CFrame.Position
+    local _, onScreen = camera:WorldToViewportPoint(part.Position)
+    if not onScreen then return false end
 
--- تهيئة اللاعبين الحاليين
-for _, player in ipairs(game.Players:GetPlayers()) do
-    if player ~= game.Players.LocalPlayer then
-        ESPTable[player] = CreateESP(player)
-    end
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+    raycastParams.FilterDescendantsInstances = {game.Players.LocalPlayer.Character}
+    raycastParams.IgnoreWater = true
+    
+    local result = workspace:Raycast(origin, part.Position - origin, raycastParams)
+    return result and result.Instance:IsDescendantOf(part.Parent)
 end
 
--- ===== حلقة التصيير =====
-game:GetService("RunService").RenderStepped:Connect(function()
-    -- تحديث موقع دائرة FOV
+local function findTarget()
+    if not settings.Active then return nil end
+    
+    local camera = workspace.CurrentCamera
+    local localPlayer = game.Players.LocalPlayer
+    local bestTarget, bestDistance = nil, FOVCircle.Radius
+    
+    -- Use cached targets if available
+    if next(targetCache) == nil then
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            if player ~= localPlayer and player.Character then
+                local humanoid = player.Character:FindFirstChild("Humanoid")
+                if humanoid and humanoid.Health > 0 then
+                    table.insert(targetCache, player)
+                end
+            end
+        end
+    end
+    
+    for _, player in ipairs(targetCache) do
+        if not player or not player.Parent then
+            table.remove(targetCache, _)
+            goto continue
+        end
+        
+        local character = player.Character
+        if not character then goto continue end
+        
+        local humanoid = character:FindFirstChild("Humanoid")
+        if not humanoid or humanoid.Health <= 0 then goto continue end
+        
+        if settings.TeamCheck and player.Team == localPlayer.Team then goto continue end
+        
+        local head = character:FindFirstChild("Head")
+        if not head or not isVisible(head) then goto continue end
+        
+        local screenPos = camera:WorldToViewportPoint(head.Position)
+        local distance = (Vector2.new(screenPos.X, screenPos.Y) - FOVCircle.Position).Magnitude
+        
+        if distance < bestDistance then
+            bestTarget = player
+            bestDistance = distance
+        end
+        
+        ::continue::
+    end
+    
+    return bestTarget
+end
+
+-- Optimized aiming system
+local function aimAtTarget(target)
+    if not target or not target.Character then return end
+    
+    local targetPart = target.Character:FindFirstChild(settings.TargetPart) or target.Character:FindFirstChild("Head")
+    if not targetPart then return end
+    
+    local camera = workspace.CurrentCamera
+    local localMouse = game.Players.LocalPlayer:GetMouse()
+    
+    local predictedPosition = targetPart.Position + (targetPart.Velocity * settings.Prediction)
+    local smoothedPosition = camera.CFrame.Position:Lerp(predictedPosition, settings.Smoothing)
+    
+    -- Auto-shoot implementation
+    if settings.AutoShoot then
+        local tool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+        if tool then
+            tool:Activate()
+        end
+    end
+    
+    -- Return target for silent aim
+    return targetPart, smoothedPosition
+end
+
+-- Hook for silent aim
+local oldNamecall
+local function setupHook()
+    local mt = getrawmetatable(game)
+    if not mt then return end
+    
+    oldNamecall = mt.__namecall
+    setreadonly(mt, false)
+    
+    mt.__namecall = newcclosure(function(self, ...)
+        if settings.SilentAim and tostring(getnamecallmethod()) == "FindPartOnRayWithIgnoreList" then
+            local target = findTarget()
+            if target then
+                return aimAtTarget(target)
+            end
+        end
+        return oldNamecall(self, ...)
+    end)
+    
+    setreadonly(mt, true)
+end
+
+-- ===== OPTIMIZED RENDER LOOP =====
+local lastUpdate = 0
+local updateInterval = settings.LightweightMode and 0.1 or 0.05
+
+game:GetService("RunService").RenderStepped:Connect(function(step)
+    -- Throttle updates for mobile
+    if step - lastUpdate < updateInterval then return end
+    lastUpdate = step
+    
+    -- Update FOV position
     FOVCircle.Position = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2, workspace.CurrentCamera.ViewportSize.Y/2)
     
-    -- تحديث ESP
-    UpdateESP()
-end)
-
--- ===== التهيئة النهائية =====
--- إظهار رسالة البدء
-print("Phantom Hunter v4.3 - تم التفعيل بنجاح!")
-warn("اضغط على زر ☰ لفتح القائمة الصغيرة")
-
--- إظهار القائمة الصغيرة عند البدء
-task.spawn(function()
-    wait(0.5)
-    if game:GetService("CoreGui"):FindFirstChild("PhantomGUI") then
-        game:GetService("CoreGui").PhantomGUI.MiniMenuButton.Visible = true
+    -- Update highlights
+    updateHighlights()
+    
+    -- Refresh target cache periodically
+    if step % 5 < updateInterval then
+        targetCache = {}
+    end
+    
+    -- Handle aiming
+    if settings.SilentAim then
+        local target = findTarget()
+        if target then
+            aimAtTarget(target)
+        end
     end
 end)
+
+-- ===== INITIALIZATION =====
+setupHook()
+
+-- Initial notification
+task.spawn(function()
+    wait(1)
+    if game:GetService("CoreGui"):FindFirstChild("PhantomGUI") then
+        game:GetService("CoreGui").PhantomGUI.MenuButton.Visible = true
+        OrionLib:MakeNotification({
+            Name = "PHANTOM HUNTER LOADED",
+            Content = "Press the menu button to open settings",
+            Image = "rbxassetid://3926307971",
+            Time = 5
+        })
+    end
+end)
+
+print("Phantom Hunter v5.0 - Optimized for iPhone X")
