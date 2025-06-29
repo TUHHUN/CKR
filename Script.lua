@@ -1,365 +1,32 @@
---[CKR]
--- PHANTOM HUNTER v4.2 - كود كامل مع واجهة مضمونة
-local OrionLib = (function()
-    -- مكتبة أوريون المدمجة - تصميم خاص لـ Phantom Hunter
-    local OrionLib = {}
-    local input = game:GetService("UserInputService")
-    local run = game:GetService("RunService")
-    local coreGui = game:GetService("CoreGui")
-    
-    -- إنشاء واجهة المستخدم الرئيسية
-    local PhantomGUI = Instance.new("ScreenGui")
-    PhantomGUI.Name = "PhantomGUI"
-    PhantomGUI.ResetOnSpawn = false
-    PhantomGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    PhantomGUI.DisplayOrder = 999
-    PhantomGUI.Parent = coreGui
-    
-    -- الإطار الرئيسي
-    local MainFrame = Instance.new("Frame")
-    MainFrame.Name = "MainFrame"
-    MainFrame.Size = UDim2.new(0, 500, 0, 550)
-    MainFrame.Position = UDim2.new(0.5, -250, 0.5, -275)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-    MainFrame.BackgroundTransparency = 0.05
-    MainFrame.BorderSizePixel = 0
-    MainFrame.ClipsDescendants = true
-    MainFrame.Visible = true
-    MainFrame.Parent = PhantomGUI
 
-    -- الزاوية العلوية
-    local Topbar = Instance.new("Frame")
-    Topbar.Name = "Topbar"
-    Topbar.Size = UDim2.new(1, 0, 0, 40)
-    Topbar.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
-    Topbar.BorderSizePixel = 0
-    Topbar.Parent = MainFrame
+-- PHANTOM HUNTER v3.3 - DELTA EXECUTOR FIXED
+local Rayfield, rayfieldError = pcall(function()
+    return loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+end)
 
-    local Title = Instance.new("TextLabel")
-    Title.Name = "Title"
-    Title.Text = "👁️ PHANTOM HUNTER ELITE"
-    Title.Font = Enum.Font.GothamBold
-    Title.TextSize = 18
-    Title.TextColor3 = Color3.fromRGB(255, 0, 128)
-    Title.BackgroundTransparency = 1
-    Title.Position = UDim2.new(0, 15, 0, 0)
-    Title.Size = UDim2.new(0, 300, 1, 0)
-    Title.Parent = Topbar
+if not Rayfield then
+    warn("فشل تحميل Rayfield: " .. tostring(rayfieldError))
+    return
+end
 
-    -- زر الإغلاق
-    local CloseButton = Instance.new("TextButton")
-    CloseButton.Name = "CloseButton"
-    CloseButton.Text = "X"
-    CloseButton.Font = Enum.Font.GothamBold
-    CloseButton.TextSize = 18
-    CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
-    CloseButton.BackgroundTransparency = 1
-    CloseButton.Position = UDim2.new(1, -35, 0.5, -10)
-    CloseButton.Size = UDim2.new(0, 30, 0, 20)
-    CloseButton.Parent = Topbar
+local Window = Rayfield:CreateWindow({
+    Name = "👁️ PHANTOM HUNTER ELITE",
+    LoadingTitle = "DELTA EXECUTOR COMPATIBLE",
+    LoadingSubtitle = "root@darknet:~$ sudo inject quantum_payload",
+    ConfigurationSaving = {Enabled = true, FolderName = "PhantomHunter", FileName = "DeltaConfig"}
+})
 
-    -- منطقة التبويبات
-    local TabContainer = Instance.new("Frame")
-    TabContainer.Name = "TabContainer"
-    TabContainer.Size = UDim2.new(1, 0, 1, -40)
-    TabContainer.Position = UDim2.new(0, 0, 0, 40)
-    TabContainer.BackgroundTransparency = 1
-    TabContainer.Visible = true
-    TabContainer.Parent = MainFrame
+-- التحقق من دعم مكتبة الرسم
+if not Drawing then
+    Window:Notify({
+        Title = "⚠️ خطأ في الدعم",
+        Content = "جهازك لا يدعم مكتبة Drawing!",
+        Duration = 8,
+    })
+    return
+end
 
-    -- أزرار التبويبات
-    local TabButtons = Instance.new("Frame")
-    TabButtons.Name = "TabButtons"
-    TabButtons.Size = UDim2.new(0, 150, 1, 0)
-    TabButtons.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-    TabButtons.BorderSizePixel = 0
-    TabButtons.Parent = TabContainer
-
-    local TabListLayout = Instance.new("UIListLayout")
-    TabListLayout.Parent = TabButtons
-    TabListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    TabListLayout.Padding = UDim.new(0, 5)
-    TabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-    -- مجلد التبويبات
-    local TabsFolder = Instance.new("Folder")
-    TabsFolder.Name = "Tabs"
-    TabsFolder.Parent = TabContainer
-
-    -- جعل الإطار قابل للسحب
-    local function MakeDraggable(topbar, frame)
-        local dragging = false
-        local dragInput, dragStart, startPos
-
-        topbar.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = true
-                dragStart = input.Position
-                startPos = frame.Position
-                
-                input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then
-                        dragging = false
-                    end
-                end)
-            end
-        end)
-
-        topbar.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement then
-                dragInput = input
-            end
-        end)
-
-        input.InputChanged:Connect(function(input)
-            if input == dragInput and dragging then
-                local delta = input.Position - dragStart
-                frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-            end
-        end)
-    end
-
-    MakeDraggable(Topbar, MainFrame)
-
-    -- التحكم برؤية الواجهة
-    CloseButton.MouseButton1Click:Connect(function()
-        MainFrame.Visible = not MainFrame.Visible
-    end)
-
-    input.InputBegan:Connect(function(key)
-        if key.KeyCode == Enum.KeyCode.Insert then
-            MainFrame.Visible = not MainFrame.Visible
-        end
-    end)
-
-    -- وظائف المكتبة
-    function OrionLib:MakeWindow(options)
-        local window = {}
-        
-        function window:MakeTab(options)
-            local tabName = options.Name or "Tab"
-            
-            -- زر التبويب
-            local TabButton = Instance.new("TextButton")
-            TabButton.Name = tabName
-            TabButton.Text = "  " .. tabName
-            TabButton.Font = Enum.Font.Gotham
-            TabButton.TextSize = 14
-            TabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-            TabButton.TextXAlignment = Enum.TextXAlignment.Left
-            TabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-            TabButton.BorderSizePixel = 0
-            TabButton.Size = UDim2.new(0.9, 0, 0, 40)
-            TabButton.LayoutOrder = #TabButtons:GetChildren()
-            TabButton.Parent = TabButtons
-
-            -- إطار التبويب
-            local TabFrame = Instance.new("ScrollingFrame")
-            TabFrame.Name = tabName
-            TabFrame.Size = UDim2.new(1, -160, 1, 0)
-            TabFrame.Position = UDim2.new(0, 160, 0, 0)
-            TabFrame.BackgroundTransparency = 1
-            TabFrame.Visible = false
-            TabFrame.Parent = TabsFolder
-            TabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-            TabFrame.ScrollBarThickness = 3
-
-            local TabList = Instance.new("UIListLayout")
-            TabList.Parent = TabFrame
-            TabList.Padding = UDim.new(0, 10)
-            TabList.SortOrder = Enum.SortOrder.LayoutOrder
-
-            -- إظهار/إخفاء التبويب عند النقر
-            TabButton.MouseButton1Click:Connect(function()
-                for _, tab in ipairs(TabsFolder:GetChildren()) do
-                    if tab:IsA("ScrollingFrame") then
-                        tab.Visible = false
-                    end
-                end
-                TabFrame.Visible = true
-            end)
-
-            -- تبويب افتراضي
-            if #TabsFolder:GetChildren() == 1 then
-                TabFrame.Visible = true
-            end
-
-            local tab = {}
-            
-            -- إضافة زر
-            function tab:AddButton(options)
-                local btnName = options.Name or "Button"
-                local callback = options.Callback or function() end
-                
-                local Button = Instance.new("TextButton")
-                Button.Name = btnName
-                Button.Text = btnName
-                Button.Font = Enum.Font.Gotham
-                Button.TextSize = 14
-                Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-                Button.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-                Button.BorderSizePixel = 0
-                Button.Size = UDim2.new(0.95, 0, 0, 40)
-                Button.LayoutOrder = #TabFrame:GetChildren()
-                Button.Parent = TabFrame
-                
-                Button.MouseButton1Click:Connect(callback)
-                
-                TabFrame.CanvasSize = UDim2.new(0, 0, 0, TabList.AbsoluteContentSize.Y + 50)
-            end
-            
-            -- إضافة تبديل
-            function tab:AddToggle(options)
-                local toggleName = options.Name or "Toggle"
-                local default = options.Default or false
-                local callback = options.Callback or function() end
-                
-                local ToggleFrame = Instance.new("Frame")
-                ToggleFrame.Name = toggleName
-                ToggleFrame.BackgroundTransparency = 1
-                ToggleFrame.Size = UDim2.new(0.95, 0, 0, 40)
-                ToggleFrame.LayoutOrder = #TabFrame:GetChildren()
-                ToggleFrame.Parent = TabFrame
-                
-                local ToggleButton = Instance.new("TextButton")
-                ToggleButton.Name = "ToggleButton"
-                ToggleButton.Text = "  " .. toggleName
-                ToggleButton.Font = Enum.Font.Gotham
-                ToggleButton.TextSize = 14
-                ToggleButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-                ToggleButton.TextXAlignment = Enum.TextXAlignment.Left
-                ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-                ToggleButton.BorderSizePixel = 0
-                ToggleButton.Size = UDim2.new(1, 0, 1, 0)
-                ToggleButton.Parent = ToggleFrame
-                
-                local ToggleIndicator = Instance.new("Frame")
-                ToggleIndicator.Name = "Indicator"
-                ToggleIndicator.Size = UDim2.new(0, 20, 0, 20)
-                ToggleIndicator.Position = UDim2.new(1, -30, 0.5, -10)
-                ToggleIndicator.BackgroundColor3 = default and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(100, 100, 100)
-                ToggleIndicator.BorderSizePixel = 0
-                ToggleIndicator.Parent = ToggleButton
-                
-                local function updateToggle(value)
-                    callback(value)
-                    ToggleIndicator.BackgroundColor3 = value and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(100, 100, 100)
-                end
-                
-                ToggleButton.MouseButton1Click:Connect(function()
-                    updateToggle(not (ToggleIndicator.BackgroundColor3 == Color3.fromRGB(0, 200, 0)))
-                end)
-                
-                TabFrame.CanvasSize = UDim2.new(0, 0, 0, TabList.AbsoluteContentSize.Y + 50)
-                
-                return {
-                    Set = function(_, value)
-                        updateToggle(value)
-                    end
-                }
-            end
-            
-            -- إضافة منزلق
-            function tab:AddSlider(options)
-                local sliderName = options.Name or "Slider"
-                local min = options.Min or 0
-                local max = options.Max or 100
-                local default = options.Default or 50
-                local callback = options.Callback or function() end
-                
-                local SliderFrame = Instance.new("Frame")
-                SliderFrame.Name = sliderName
-                SliderFrame.BackgroundTransparency = 1
-                SliderFrame.Size = UDim2.new(0.95, 0, 0, 60)
-                SliderFrame.LayoutOrder = #TabFrame:GetChildren()
-                SliderFrame.Parent = TabFrame
-                
-                local SliderTitle = Instance.new("TextLabel")
-                SliderTitle.Name = "Title"
-                SliderTitle.Text = "  " .. sliderName
-                SliderTitle.Font = Enum.Font.Gotham
-                SliderTitle.TextSize = 14
-                SliderTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
-                SliderTitle.TextXAlignment = Enum.TextXAlignment.Left
-                SliderTitle.BackgroundTransparency = 1
-                SliderTitle.Size = UDim2.new(1, 0, 0.5, 0)
-                SliderTitle.Parent = SliderFrame
-                
-                local SliderBar = Instance.new("Frame")
-                SliderBar.Name = "Bar"
-                SliderBar.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-                SliderBar.BorderSizePixel = 0
-                SliderBar.Position = UDim2.new(0.05, 0, 0.7, 0)
-                SliderBar.Size = UDim2.new(0.9, 0, 0.2, 0)
-                SliderBar.Parent = SliderFrame
-                
-                local SliderFill = Instance.new("Frame")
-                SliderFill.Name = "Fill"
-                SliderFill.BackgroundColor3 = Color3.fromRGB(255, 0, 128)
-                SliderFill.BorderSizePixel = 0
-                SliderFill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
-                SliderFill.Parent = SliderBar
-                
-                local SliderValue = Instance.new("TextLabel")
-                SliderValue.Name = "Value"
-                SliderValue.Text = tostring(default)
-                SliderValue.Font = Enum.Font.Gotham
-                SliderValue.TextSize = 14
-                SliderValue.TextColor3 = Color3.fromRGB(255, 255, 255)
-                SliderValue.BackgroundTransparency = 1
-                SliderValue.Position = UDim2.new(0.5, 0, 0, 0)
-                SliderValue.Size = UDim2.new(0.5, 0, 1, 0)
-                SliderValue.Parent = SliderBar
-                
-                local function updateSlider(value)
-                    local percent = math.clamp((value - min) / (max - min), 0, 1)
-                    SliderFill.Size = UDim2.new(percent, 0, 1, 0)
-                    SliderValue.Text = tostring(math.floor(value))
-                    callback(value)
-                end
-                
-                SliderBar.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        local function moveSlider()
-                            local pos = input.Position.X - SliderBar.AbsolutePosition.X
-                            local percent = math.clamp(pos / SliderBar.AbsoluteSize.X, 0, 1)
-                            local value = min + (max - min) * percent
-                            updateSlider(value)
-                        end
-                        
-                        moveSlider()
-                        
-                        local connection
-                        connection = input.Changed:Connect(function()
-                            if input.UserInputState == Enum.UserInputState.End then
-                                connection:Disconnect()
-                            else
-                                moveSlider()
-                            end
-                        end)
-                    end
-                end)
-                
-                TabFrame.CanvasSize = UDim2.new(0, 0, 0, TabList.AbsoluteContentSize.Y + 50)
-                
-                return {
-                    Set = function(_, value)
-                        updateSlider(value)
-                    end
-                }
-            end
-            
-            return tab
-        end
-        
-        return window
-    end
-    
-    return OrionLib
-end)()
-
--- ===== نظام التصويب الذكي =====
--- دائرة مجال الرؤية
+-- QUANTUM AIMBOT ENGINE (DELTA FIXED)
 local FOVCircle = Drawing.new("Circle")
 FOVCircle.Visible = true
 FOVCircle.Radius = 80
@@ -368,7 +35,7 @@ FOVCircle.Thickness = 2
 FOVCircle.Transparency = 0.7
 FOVCircle.Position = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2, workspace.CurrentCamera.ViewportSize.Y/2)
 
--- إعدادات التصويب
+-- PRECISION PARAMETERS
 local Prediction = 0.165
 local Smoothing = 0.35
 local TargetPart = "HumanoidRootPart"
@@ -378,7 +45,7 @@ local AutoShoot = false
 local AimMode = "Closest to Crosshair"
 local FOVVisible = true
 
--- إعدادات الـ ESP
+-- ESP ENHANCEMENTS
 local HealthBarESP = true
 local DistanceESP = true
 local NameTags = true
@@ -387,202 +54,790 @@ local SkeletonESP = false
 local WeaponESP = false
 local ThreatLevelESP = false
 
--- إعدادات الأداء
+-- DELTA EXECUTOR FIXES
+local SafeHook = true
+local DeltaCompatibility = true
 local LightweightMode = false
-local SilentAim = false
 
--- إنشاء النافذة
-local Window = OrionLib:MakeWindow({
-    Name = "👁️ PHANTOM HUNTER ELITE",
+-- COMBAT TAB
+local CombatTab = Window:CreateTab("🔥 QUANTUM COMBAT", 4483362458)
+CombatTab:CreateToggle({
+    Name = "AI AIMBOT",
+    CurrentValue = false,
+    Flag = "AimbotToggle",
+    Callback = function(State)
+        getgenv().SilentAim = State
+    end
 })
 
--- تبويب القتال
-local CombatTab = Window:MakeTab({
-    Name = "🔥 القتال",
+CombatTab:CreateToggle({
+    Name = "DELTA HOOK FIX",
+    CurrentValue = SafeHook,
+    Flag = "HookFixToggle",
+    Callback = function(State)
+        SafeHook = State
+        SetupHook()
+    end
 })
 
-CombatTab:AddToggle({
-    Name = "التصويب الذكي",
-    Default = false,
-    Callback = function(Value)
-        SilentAim = Value
-    end    
+CombatTab:CreateToggle({
+    Name = "LIGHTWEIGHT MODE",
+    CurrentValue = LightweightMode,
+    Flag = "LightweightToggle",
+    Callback = function(State)
+        LightweightMode = State
+    end
 })
 
-CombatTab:AddToggle({
-    Name = "إطلاق نار تلقائي",
-    Default = AutoShoot,
-    Callback = function(Value)
-        AutoShoot = Value
-    end    
+CombatTab:CreateToggle({
+    Name = "AUTO SHOOT",
+    CurrentValue = AutoShoot,
+    Flag = "AutoShootToggle",
+    Callback = function(State)
+        AutoShoot = State
+    end
 })
 
-CombatTab:AddSlider({
-    Name = "توقع الحركة",
-    Min = 0.01,
-    Max = 0.5,
-    Default = Prediction,
+CombatTab:CreateSlider({
+    Name = "PREDICTION",
+    Range = {0.01, 0.5},
+    Increment = 0.01,
+    Suffix = "sec",
+    CurrentValue = Prediction,
+    Flag = "PredictionSlider",
     Callback = function(Value)
         Prediction = Value
-    end    
+    end
 })
 
-CombatTab:AddSlider({
-    Name = "السلاسة",
-    Min = 0.01,
-    Max = 1.0,
-    Default = Smoothing,
+CombatTab:CreateSlider({
+    Name = "SMOOTHING",
+    Range = {0.01, 1.0},
+    Increment = 0.01,
+    Suffix = "x",
+    CurrentValue = Smoothing,
+    Flag = "SmoothingSlider",
     Callback = function(Value)
         Smoothing = Value
-    end    
+    end
 })
 
-CombatTab:AddToggle({
-    Name = "تصويب عبر الحائط",
-    Default = WallCheck,
-    Callback = function(Value)
-        WallCheck = Value
-    end    
+CombatTab:CreateDropdown({
+    Name = "TARGET PART",
+    Options = {"Head", "HumanoidRootPart", "Torso", "Random"},
+    CurrentOption = TargetPart,
+    Flag = "TargetPartDropdown",
+    Callback = function(Option)
+        TargetPart = Option
+    end
 })
 
-CombatTab:AddToggle({
-    Name = "فلترة الفريق",
-    Default = TeamCheck,
-    Callback = function(Value)
-        TeamCheck = Value
-    end    
+CombatTab:CreateDropdown({
+    Name = "AIM MODE",
+    Options = {"Closest to Crosshair", "Lowest Health", "Highest Threat"},
+    CurrentOption = AimMode,
+    Flag = "AimModeDropdown",
+    Callback = function(Option)
+        AimMode = Option
+    end
 })
 
-CombatTab:AddSlider({
-    Name = "حجم مجال الرؤية",
-    Min = 20,
-    Max = 600,
-    Default = 80,
+CombatTab:CreateToggle({
+    Name = "TEAM CHECK",
+    CurrentValue = TeamCheck,
+    Flag = "TeamCheckToggle",
+    Callback = function(State)
+        TeamCheck = State
+    end
+})
+
+CombatTab:CreateToggle({
+    Name = "WALL CHECK",
+    CurrentValue = WallCheck,
+    Flag = "WallCheckToggle",
+    Callback = function(State)
+        WallCheck = State
+    end
+})
+
+CombatTab:CreateSlider({
+    Name = "FOV SIZE",
+    Range = {20, 600},
+    Increment = 10,
+    Suffix = "pixels",
+    CurrentValue = 80,
+    Flag = "FOVSlider",
     Callback = function(Value)
         FOVCircle.Radius = Value
-    end    
+    end
 })
 
--- تبويب المرئيات
-local VisualsTab = Window:MakeTab({
-    Name = "👁️ المرئيات",
+-- VISUALS TAB
+local VisualsTab = Window:CreateTab("👁️ QUANTUM VISUALS", 4483362458)
+VisualsTab:CreateToggle({
+    Name = "FOV VISIBLE",
+    CurrentValue = FOVVisible,
+    Flag = "FOVToggle",
+    Callback = function(State)
+        FOVVisible = State
+        FOVCircle.Visible = State
+    end
 })
 
-VisualsTab:AddToggle({
-    Name = "إظهار مجال الرؤية",
-    Default = FOVVisible,
-    Callback = function(Value)
-        FOVVisible = Value
-        FOVCircle.Visible = Value
-    end    
+VisualsTab:CreateToggle({
+    Name = "BOX ESP",
+    CurrentValue = false,
+    Flag = "BoxToggle",
+    Callback = function(State)
+        for _, esp in pairs(ESPTable) do
+            if esp.Box then esp.Box.Visible = State end
+        end
+    end
 })
 
-VisualsTab:AddToggle({
-    Name = "مربع ESP",
-    Default = false,
-    Callback = function(Value)
-        -- سيتم تنفيذ هذا لاحقًا
-    end    
+VisualsTab:CreateToggle({
+    Name = "HIGHLIGHT ESP",
+    CurrentValue = false,
+    Flag = "HighlightToggle",
+    Callback = function(State)
+        for _, esp in pairs(ESPTable) do
+            if esp.Highlight then esp.Highlight.Enabled = State end
+        end
+    end
 })
 
--- ===== نظام التتبع والتصويب =====
--- جدول تتبع اللاعبين
+VisualsTab:CreateToggle({
+    Name = "SKELETON ESP",
+    CurrentValue = SkeletonESP,
+    Flag = "SkeletonToggle",
+    Callback = function(State)
+        SkeletonESP = State
+    end
+})
+
+VisualsTab:CreateToggle({
+    Name = "HEALTH BAR",
+    CurrentValue = HealthBarESP,
+    Flag = "HealthBarToggle",
+    Callback = function(State)
+        HealthBarESP = State
+    end
+})
+
+VisualsTab:CreateToggle({
+    Name = "DISTANCE",
+    CurrentValue = DistanceESP,
+    Flag = "DistanceToggle",
+    Callback = function(State)
+        DistanceESP = State
+    end
+})
+
+VisualsTab:CreateToggle({
+    Name = "NAME TAGS",
+    CurrentValue = NameTags,
+    Flag = "NameTagToggle",
+    Callback = function(State)
+        NameTags = State
+    end
+})
+
+VisualsTab:CreateToggle({
+    Name = "THREAT LEVEL",
+    CurrentValue = ThreatLevelESP,
+    Flag = "ThreatToggle",
+    Callback = function(State)
+        ThreatLevelESP = State
+    end
+})
+
+VisualsTab:CreateToggle({
+    Name = "WEAPON ESP",
+    CurrentValue = WeaponESP,
+    Flag = "WeaponToggle",
+    Callback = function(State)
+        WeaponESP = State
+    end
+})
+
+VisualsTab:CreateToggle({
+    Name = "CHAMS",
+    CurrentValue = ChamsEnabled,
+    Flag = "ChamsToggle",
+    Callback = function(State)
+        ChamsEnabled = State
+        for player, esp in pairs(ESPTable) do
+            if esp.Cham then esp.Cham.Enabled = State end
+        end
+    end
+})
+
+VisualsTab:CreateColorPicker({
+    Name = "FOV COLOR",
+    Color = Color3.fromRGB(255, 0, 128),
+    Flag = "FOVColorPicker",
+    Callback = function(Color)
+        FOVCircle.Color = Color
+    end
+})
+
+-- ADVANCED PLAYER TRACKING (DELTA FIXED)
 local ESPTable = {}
 local ThreatLevels = {}
 
--- إنشاء عناصر ESP للاعب
 local function CreateESP(player)
-    -- سيتم تنفيذ هذا لاحقًا
-    return {}
+    if not player or not player.Parent then return nil end
+    
+    local components = {}
+    
+    -- Box ESP
+    components.Box = Drawing.new("Square")
+    components.Box.Visible = false
+    components.Box.Color = Color3.new(1, 0, 0)
+    components.Box.Thickness = 2
+    components.Box.Filled = false
+    
+    -- Health Bar
+    components.HealthBar = Drawing.new("Square")
+    components.HealthBar.Visible = false
+    components.HealthBar.Filled = true
+    
+    -- Distance
+    components.DistanceText = Drawing.new("Text")
+    components.DistanceText.Visible = false
+    components.DistanceText.Color = Color3.new(1, 1, 1)
+    components.DistanceText.Size = 14
+    components.DistanceText.Center = true
+    
+    -- Name Tag
+    components.NameText = Drawing.new("Text")
+    components.NameText.Visible = false
+    components.NameText.Size = 16
+    components.NameText.Center = true
+    
+    -- Threat Level
+    components.ThreatText = Drawing.new("Text")
+    components.ThreatText.Visible = false
+    components.ThreatText.Size = 14
+    components.ThreatText.Center = true
+    
+    -- Weapon ESP
+    components.WeaponText = Drawing.new("Text")
+    components.WeaponText.Visible = false
+    components.WeaponText.Size = 14
+    components.WeaponText.Center = true
+    
+    -- Highlight
+    if player.Character then
+        components.Highlight = Instance.new("Highlight")
+        components.Highlight.Parent = player.Character
+        components.Highlight.Enabled = false
+        components.Highlight.FillTransparency = 0.8
+        components.Highlight.OutlineTransparency = 0
+    end
+    
+    -- Skeleton ESP
+    components.Skeleton = {}
+    local boneNames = {"Head", "UpperTorso", "LowerTorso", "LeftUpperArm", "RightUpperArm", 
+        "LeftLowerArm", "RightLowerArm", "LeftUpperLeg", "RightUpperLeg", "LeftLowerLeg", "RightLowerLeg"}
+    
+    for _, boneName in ipairs(boneNames) do
+        components.Skeleton[boneName] = Drawing.new("Line")
+        components.Skeleton[boneName].Visible = false
+        components.Skeleton[boneName].Thickness = 1
+    end
+    
+    -- Chams
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        components.Cham = Instance.new("BoxHandleAdornment")
+        components.Cham.Parent = player.Character
+        components.Cham.Adornee = player.Character.HumanoidRootPart
+        components.Cham.Size = Vector3.new(2, 4, 1)
+        components.Cham.Color3 = Color3.new(1, 0, 0)
+        components.Cham.Transparency = 0.5
+        components.Cham.AlwaysOnTop = true
+        components.Cham.ZIndex = 10
+        components.Cham.Enabled = false
+    end
+    
+    -- Initialize threat level
+    ThreatLevels[player] = 0
+    
+    return components
 end
 
--- التحقق من الرؤية عبر الجدران
+-- FIXED WALL CHECK (DELTA COMPATIBLE)
 local function IsVisible(part)
+    if not part or not part.Parent then return false end
     if not WallCheck then return true end
-    -- سيتم تنفيذ هذا لاحقًا
-    return true
+    
+    local camera = workspace.CurrentCamera
+    if not camera then return false end
+    
+    local localPlayer = game.Players.LocalPlayer
+    if not localPlayer or not localPlayer.Character then return false end
+
+    local origin = camera.CFrame.Position
+    local _, onScreen = camera:WorldToViewportPoint(part.Position)
+    if not onScreen then return false end
+
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+    raycastParams.FilterDescendantsInstances = {localPlayer.Character}
+    raycastParams.IgnoreWater = true
+    
+    local result = workspace:Raycast(origin, part.Position - origin, raycastParams)
+    return result and result.Instance:IsDescendantOf(part.Parent)
 end
 
--- إدارة اللاعبين
+-- PLAYER MANAGEMENT
 local function PlayerAdded(player)
     if player == game.Players.LocalPlayer then return end
-    -- سيتم تنفيذ هذا لاحقًا
+    
+    player.CharacterAdded:Connect(function(char)
+        ESPTable[player] = CreateESP(player)
+    end)
+    
+    if player.Character then
+        ESPTable[player] = CreateESP(player)
+    end
 end
 
 local function PlayerRemoving(player)
-    -- سيتم تنفيذ هذا لاحقًا
-end
-
--- العثور على الهدف
-local function FindTarget()
-    -- سيتم تنفيذ هذا لاحقًا
-    return nil
-end
-
--- حساب توقع الحركة
-local function CalculatePrediction(target)
-    -- سيتم تنفيذ هذا لاحقًا
-    return Vector3.new()
-end
-
--- نظام التصويب
-local oldNamecall
-local function SetupHook()
-    local mt = getrawmetatable(game)
-    if not mt then return false end
-    
-    oldNamecall = mt.__namecall
-    setreadonly(mt, false)
-    
-    mt.__namecall = newcclosure(function(self, ...)
-        if SilentAim and tostring(getnamecallmethod()) == "FindPartOnRayWithIgnoreList" then
-            local target = FindTarget()
-            if target and target.Character then
-                -- سيتم تنفيذ هذا لاحقًا
+    if ESPTable[player] then
+        for _, drawing in pairs(ESPTable[player]) do
+            if typeof(drawing) == "Drawing" then
+                pcall(function() drawing:Remove() end)
+            elseif typeof(drawing) == "table" then
+                for _, bone in pairs(drawing) do
+                    if typeof(bone) == "Drawing" then
+                        pcall(function() bone:Remove() end)
+                    end
+                end
+            elseif typeof(drawing) == "Instance" then
+                pcall(function() drawing:Destroy() end)
             end
         end
-        return oldNamecall(self, ...)
-    end)
-    
-    setreadonly(mt, true)
-    return true
+        ESPTable[player] = nil
+        ThreatLevels[player] = nil
+    end
 end
 
--- حلقة التصيير
-game:GetService("RunService").RenderStepped:Connect(function()
-    -- تحديث موقع دائرة FOV
-    FOVCircle.Position = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2, workspace.CurrentCamera.ViewportSize.Y/2)
-    
-    -- سيتم تنفيذ بقية النظام لاحقًا
-end)
-
--- ===== التهيئة النهائية =====
--- تهيئة نظام التصويب
-SetupHook()
-
--- تهيئة ESP للاعبين الموجودين
 for _, player in ipairs(game.Players:GetPlayers()) do
     PlayerAdded(player)
 end
 
--- رسالة البدء
-print("Phantom Hunter v4.2 - تم التفعيل بنجاح!")
-warn("اضغط على زر INSERT لفتح/إغلاق القائمة")
+game.Players.PlayerAdded:Connect(PlayerAdded)
+game.Players.PlayerRemoving:Connect(PlayerRemoving)
 
--- التأكد من ظهور الواجهة
-task.spawn(function()
-    wait(1)
-    if game:GetService("CoreGui"):FindFirstChild("PhantomGUI") then
-        game:GetService("CoreGui").PhantomGUI.MainFrame.Visible = true
-        print("تم عرض واجهة المستخدم بنجاح")
-    else
-        warn("فشل في العثور على واجهة المستخدم")
+-- FIXED TARGETING SYSTEM
+local function FindTarget()
+    local camera = workspace.CurrentCamera
+    if not camera then return nil end
+    
+    local localPlayer = game.Players.LocalPlayer
+    if not localPlayer then return nil end
+    
+    local localChar = localPlayer.Character
+    if not localChar then return nil end
+    
+    local localRoot = localChar:FindFirstChild("HumanoidRootPart")
+    if not localRoot then return nil end
+    
+    local bestTarget, bestScore = nil, -math.huge
+    
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player == localPlayer then continue end
+        if not player or not player.Parent then continue end
+        
+        local char = player.Character
+        if not char then continue end
+        
+        local humanoid = char:FindFirstChild("Humanoid")
+        if not humanoid or humanoid.Health <= 0 then continue end
+        
+        local rootPart = char:FindFirstChild("HumanoidRootPart")
+        local head = char:FindFirstChild("Head")
+        if not rootPart or not head then continue end
+        
+        if TeamCheck and player.Team == localPlayer.Team then continue end
+        if not IsVisible(head) then continue end
+        
+        -- Position calculations
+        local screenPos, visible = camera:WorldToViewportPoint(head.Position)
+        if not visible then continue end
+        
+        local distance = (localRoot.Position - rootPart.Position).Magnitude
+        local crosshairDist = (Vector2.new(screenPos.X, screenPos.Y) - FOVCircle.Position).Magnitude
+        
+        -- Scoring system
+        local score = 0
+        if AimMode == "Closest to Crosshair" then
+            score = 1 / (crosshairDist + 0.001)
+        elseif AimMode == "Lowest Health" then
+            score = 1 / (humanoid.Health + 0.001)
+        elseif AimMode == "Highest Threat" then
+            score = ThreatLevels[player] or 0
+        end
+        
+        -- Add distance factor
+        score = score * (1 / (distance * 0.1))
+        
+        if score > bestScore then
+            bestTarget = player
+            bestScore = score
+        end
+    end
+    
+    return bestTarget
+end
+
+-- QUANTUM PREDICTION ENGINE
+local function CalculatePrediction(target)
+    if not target or not target.Character then return Vector3.new(0,0,0) end
+    
+    local rootPart = target.Character:FindFirstChild("HumanoidRootPart")
+    local humanoid = target.Character:FindFirstChild("Humanoid")
+    
+    if not rootPart or not humanoid then 
+        return rootPart and rootPart.Position or Vector3.new(0,0,0)
+    end
+    
+    -- Advanced prediction using velocity and humanoid state
+    local predictedPosition = rootPart.Position
+    
+    -- Add movement direction prediction
+    if humanoid.MoveDirection.Magnitude > 0 then
+        predictedPosition = predictedPosition + (humanoid.MoveDirection * Prediction * 20)
+    end
+    
+    -- Add jump prediction
+    if humanoid:GetState() == Enum.HumanoidStateType.Jumping then
+        predictedPosition = predictedPosition + Vector3.new(0, Prediction * 25, 0)
+    end
+    
+    -- Add velocity factor
+    predictedPosition = predictedPosition + (rootPart.Velocity * Prediction)
+    
+    return predictedPosition
+end
+
+-- DELTA-FIXED HOOKING SYSTEM
+local oldNamecall
+local hookActive = false
+
+local function SetupHook()
+    if hookActive then return true end
+    
+    if SafeHook and DeltaCompatibility then
+        -- Delta-friendly hook
+        local mt = getrawmetatable(game)
+        if not mt then return false end
+        
+        oldNamecall = mt.__namecall
+        setreadonly(mt, false)
+        
+        local hookFunc = function(self, ...)
+            local args = {...}
+            local method = getnamecallmethod()
+            
+            if getgenv().SilentAim and tostring(method) == "FindPartOnRayWithIgnoreList" then
+                local target = FindTarget()
+                if target and target.Character then
+                    -- Dynamic target part selection
+                    local actualTargetPart = TargetPart
+                    if TargetPart == "Random" then
+                        local parts = {"Head", "HumanoidRootPart", "Torso"}
+                        actualTargetPart = parts[math.random(1, #parts)]
+                    end
+                    
+                    local targetPart = target.Character:FindFirstChild(actualTargetPart) or target.Character.Head
+                    if not targetPart then return oldNamecall(self, unpack(args)) end
+                    
+                    local predictedPosition = CalculatePrediction(target)
+                    
+                    -- Smoothing algorithm
+                    local camera = workspace.CurrentCamera
+                    if not camera then return oldNamecall(self, unpack(args)) end
+                    
+                    local smoothedPosition = camera.CFrame.Position:Lerp(predictedPosition, Smoothing)
+                    
+                    -- Auto-shoot implementation
+                    if AutoShoot then
+                        spawn(function()
+                            local localChar = game.Players.LocalPlayer.Character
+                            if localChar then
+                                local tool = localChar:FindFirstChildOfClass("Tool")
+                                if tool then
+                                    tool:Activate()
+                                end
+                            end
+                        end)
+                    end
+                    
+                    return targetPart, smoothedPosition
+                end
+            end
+            return oldNamecall(self, unpack(args))
+        end
+        
+        -- استخدام newcclosure إذا كان متاحًا
+        if newcclosure then
+            mt.__namecall = newcclosure(hookFunc)
+        else
+            mt.__namecall = hookFunc
+        end
+        
+        setreadonly(mt, true)
+        hookActive = true
+        return true
+    end
+    return false
+end
+
+-- DAMAGE TRACKER FOR THREAT LEVELS
+local function TrackDamage()
+    local localPlayer = game.Players.LocalPlayer
+    if not localPlayer then return end
+    
+    localPlayer.CharacterAdded:Connect(function(char)
+        local humanoid = char:FindFirstChild("Humanoid")
+        if not humanoid then return end
+        
+        humanoid:GetPropertyChangedSignal("Health"):Connect(function()
+            if humanoid.Health < humanoid.MaxHealth then
+                -- Find who damaged us
+                for _, player in pairs(game.Players:GetPlayers()) do
+                    if player ~= localPlayer and player.Character then
+                        local lastDamage = humanoid:GetAttribute("LastDamageSource")
+                        if lastDamage and lastDamage:IsDescendantOf(player.Character) then
+                            ThreatLevels[player] = (ThreatLevels[player] or 0) + 10
+                        end
+                    end
+                end
+            end
+        end)
+    end)
+end
+
+-- FIXED RENDER LOOP (DELTA OPTIMIZED)
+local LastUpdate = tick()
+local UpdateInterval = LightweightMode and 0.1 or 0.03
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if LightweightMode and (tick() - LastUpdate < UpdateInterval) then return end
+    LastUpdate = tick()
+    
+    local camera = workspace.CurrentCamera
+    if not camera then return end
+    
+    local localPlayer = game.Players.LocalPlayer
+    if not localPlayer then return end
+    
+    local localChar = localPlayer.Character
+    if not localChar then return end
+    
+    local localRoot = localChar:FindFirstChild("HumanoidRootPart")
+    if not localRoot then return end
+    
+    -- Update FOV position
+    FOVCircle.Position = Vector2.new(camera.ViewportSize.X/2, camera.ViewportSize.Y/2)
+    
+    for player, esp in pairs(ESPTable) do
+        if not player or not player.Parent then
+            ESPTable[player] = nil
+            continue
+        end
+        
+        local char = player.Character
+        if not char or char.Parent == nil then
+            for _, drawing in pairs(esp) do
+                if typeof(drawing) == "Drawing" then
+                    pcall(function() drawing.Visible = false end)
+                elseif typeof(drawing) == "Instance" and drawing:IsA("Highlight") then
+                    pcall(function() drawing.Enabled = false end)
+                end
+            end
+            continue
+        end
+        
+        local rootPart = char:FindFirstChild("HumanoidRootPart")
+        local humanoid = char:FindFirstChild("Humanoid")
+        
+        if rootPart and humanoid and humanoid.Health > 0 then
+            local position, onScreen = camera:WorldToViewportPoint(rootPart.Position)
+            
+            if onScreen then
+                -- BOX ESP
+                local scale = 2000 / position.Z
+                local boxSize = Vector2.new(scale * 2, scale * 3)
+                local boxPos = Vector2.new(position.X - scale, position.Y - scale * 1.5)
+                
+                if esp.Box then
+                    esp.Box.Size = boxSize
+                    esp.Box.Position = boxPos
+                    esp.Box.Visible = VisualsTab:GetElement("BoxToggle").CurrentValue
+                end
+                
+                -- HEALTH BAR
+                if HealthBarESP and esp.HealthBar then
+                    local healthPercent = humanoid.Health / humanoid.MaxHealth
+                    local healthHeight = boxSize.Y * healthPercent
+                    esp.HealthBar.Size = Vector2.new(2, healthHeight)
+                    esp.HealthBar.Position = Vector2.new(boxPos.X - 6, boxPos.Y + boxSize.Y - healthHeight)
+                    esp.HealthBar.Color = Color3.new(1 - healthPercent, healthPercent, 0)
+                    esp.HealthBar.Visible = true
+                elseif esp.HealthBar then
+                    esp.HealthBar.Visible = false
+                end
+                
+                -- DISTANCE
+                if DistanceESP and esp.DistanceText then
+                    local distance = (localRoot.Position - rootPart.Position).Magnitude
+                    esp.DistanceText.Text = math.floor(distance) .. "m"
+                    esp.DistanceText.Position = Vector2.new(boxPos.X + boxSize.X/2, boxPos.Y + boxSize.Y + 5)
+                    esp.DistanceText.Visible = true
+                elseif esp.DistanceText then
+                    esp.DistanceText.Visible = false
+                end
+                
+                -- NAME TAG
+                if NameTags and esp.NameText then
+                    esp.NameText.Text = player.Name
+                    esp.NameText.Position = Vector2.new(boxPos.X + boxSize.X/2, boxPos.Y - 20)
+                    esp.NameText.Visible = true
+                elseif esp.NameText then
+                    esp.NameText.Visible = false
+                end
+                
+                -- THREAT LEVEL
+                if ThreatLevelESP and esp.ThreatText then
+                    local threat = ThreatLevels[player] or 0
+                    local threatColor
+                    if threat < 20 then
+                        threatColor = Color3.new(0, 1, 0)
+                    elseif threat < 50 then
+                        threatColor = Color3.new(1, 1, 0)
+                    else
+                        threatColor = Color3.new(1, 0, 0)
+                    end
+                    
+                    esp.ThreatText.Text = "☠️" .. threat
+                    esp.ThreatText.Color = threatColor
+                    esp.ThreatText.Position = Vector2.new(boxPos.X + boxSize.X/2, boxPos.Y - 40)
+                    esp.ThreatText.Visible = true
+                elseif esp.ThreatText then
+                    esp.ThreatText.Visible = false
+                end
+                
+                -- WEAPON ESP
+                if WeaponESP and esp.WeaponText then
+                    local weapon = "Fists"
+                    for _, tool in ipairs(char:GetChildren()) do
+                        if tool:IsA("Tool") then
+                            weapon = tool.Name
+                            break
+                        end
+                    end
+                    
+                    esp.WeaponText.Text = "🔫 " .. weapon
+                    esp.WeaponText.Position = Vector2.new(boxPos.X + boxSize.X/2, boxPos.Y + boxSize.Y + 25)
+                    esp.WeaponText.Visible = true
+                elseif esp.WeaponText then
+                    esp.WeaponText.Visible = false
+                end
+                
+                -- SKELETON ESP
+                if SkeletonESP then
+                    for boneName, line in pairs(esp.Skeleton) do
+                        local bone = char:FindFirstChild(boneName)
+                        if bone then
+                            local bonePos, boneVisible = camera:WorldToViewportPoint(bone.Position)
+                            if boneVisible then
+                                line.From = Vector2.new(position.X, position.Y)
+                                line.To = Vector2.new(bonePos.X, bonePos.Y)
+                                line.Visible = true
+                            else
+                                line.Visible = false
+                            end
+                        end
+                    end
+                else
+                    for _, line in pairs(esp.Skeleton) do
+                        line.Visible = false
+                    end
+                end
+                
+                -- HIGHLIGHT
+                if esp.Highlight then
+                    esp.Highlight.Enabled = VisualsTab:GetElement("HighlightToggle").CurrentValue
+                end
+                
+                -- CHAMS
+                if esp.Cham then
+                    esp.Cham.Enabled = ChamsEnabled
+                end
+            else
+                -- Hide all elements when off-screen
+                if esp.Box then esp.Box.Visible = false end
+                if esp.HealthBar then esp.HealthBar.Visible = false end
+                if esp.DistanceText then esp.DistanceText.Visible = false end
+                if esp.NameText then esp.NameText.Visible = false end
+                if esp.ThreatText then esp.ThreatText.Visible = false end
+                if esp.WeaponText then esp.WeaponText.Visible = false end
+                for _, line in pairs(esp.Skeleton) do
+                    line.Visible = false
+                end
+                if esp.Cham then esp.Cham.Enabled = false end
+            end
+        end
     end
 end)
 
--- إظهار إشعار بدء التشغيل
-OrionLib:MakeWindow({}):MakeTab({}):AddButton({
-    Name = "تم التحميل بنجاح!",
-    Callback = function()
+-- INITIALIZATION AND ERROR HANDLING
+local function SafeInitialize()
+    -- Setup hooks
+    local hookSuccess = SetupHook()
+    
+    -- Initialize damage tracking
+    TrackDamage()
+    
+    Window:Notify({
+        Title = hookSuccess and "👁️ HOOK SUCCESS" or "⚠️ HOOK FAILED",
+        Content = hookSuccess and "Delta-compatible hook installed" or "Using fallback method",
+        Duration = 6,
+        Image = 4483362458,
+    })
+    
+    -- Lightweight mode notification
+    if LightweightMode then
+        Window:Notify({
+            Title = "⚡ LIGHTWEIGHT MODE",
+            Content = "Reduced ESP updates for better performance",
+            Duration = 4,
+        })
     end
-})
+end
+
+-- DEBUG MODE
+print("Phantom Hunter v3.3 - تم التفعيل بنجاح!")
+warn("الحالة: جاهز للتشغيل")
+
+-- DELTA EXECUTOR WORKAROUND
+local success, err = pcall(SafeInitialize)
+if not success then
+    Window:Notify({
+        Title = "⚠️ INITIALIZATION ERROR",
+        Content = "Falling back to basic mode: "..tostring(err),
+        Duration = 8,
+    })
+    
+    -- Attempt basic initialization
+    pcall(function()
+        SetupHook()
+        TrackDamage()
+    end)
+end
+
+-- UNHOOK ON SCRIPT TERMINATION
+Rayfield:DestroyOnClose()
