@@ -1,5 +1,5 @@
 -- PHANTOM HUNTER v5.1 - Rayfield Edition
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "👁️ PHANTOM HUNTER",
    LoadingTitle = "Loading Quantum Aim System...",
