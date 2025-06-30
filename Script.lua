@@ -1,382 +1,21 @@
+-- PHANTOM HUNTER v5.1 - Rayfield Edition
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+local Window = Rayfield:CreateWindow({
+   Name = "👁️ PHANTOM HUNTER",
+   LoadingTitle = "Loading Quantum Aim System...",
+   LoadingSubtitle = "Optimizing for mobile performance",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "PhantomConfig",
+      FileName = "MobileSettings"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
+   }
+})
 
--- PHANTOM HUNTER v5.0 - Optimized for iPhone X
-local OrionLib = (function()
-    -- Enhanced Embedded Orion Library
-    local OrionLib = {}
-    local input = game:GetService("UserInputService")
-    local run = game:GetService("RunService")
-    local coreGui = game:GetService("CoreGui")
-    
-    -- Create main UI
-    local PhantomGUI = Instance.new("ScreenGui")
-    PhantomGUI.Name = "PhantomGUI"
-    PhantomGUI.ResetOnSpawn = false
-    PhantomGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    PhantomGUI.DisplayOrder = 999
-    PhantomGUI.Parent = coreGui
-    
-    -- Main Frame with optimized size for iPhone X
-    local MainFrame = Instance.new("Frame")
-    MainFrame.Name = "MainFrame"
-    MainFrame.Size = UDim2.new(0, 300, 0, 350)
-    MainFrame.Position = UDim2.new(0.5, -150, 0.5, -175)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-    MainFrame.BackgroundTransparency = 0.1
-    MainFrame.BorderSizePixel = 0
-    MainFrame.ClipsDescendants = true
-    MainFrame.Visible = false
-    MainFrame.Parent = PhantomGUI
-
-    -- Topbar with modern design
-    local Topbar = Instance.new("Frame")
-    Topbar.Name = "Topbar"
-    Topbar.Size = UDim2.new(1, 0, 0, 30)
-    Topbar.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
-    Topbar.BorderSizePixel = 0
-    Topbar.Parent = MainFrame
-
-    local Title = Instance.new("TextLabel")
-    Title.Name = "Title"
-    Title.Text = "👁️ PHANTOM HUNTER"
-    Title.Font = Enum.Font.GothamBold
-    Title.TextSize = 14
-    Title.TextColor3 = Color3.fromRGB(255, 0, 128)
-    Title.BackgroundTransparency = 1
-    Title.Position = UDim2.new(0, 10, 0, 0)
-    Title.Size = UDim2.new(0, 200, 1, 0)
-    Title.Parent = Topbar
-
-    -- Close Button with modern icon
-    local CloseButton = Instance.new("ImageButton")
-    CloseButton.Name = "CloseButton"
-    CloseButton.Image = "rbxassetid://3926305904"
-    CloseButton.ImageRectOffset = Vector2.new(924, 724)
-    CloseButton.ImageRectSize = Vector2.new(36, 36)
-    CloseButton.BackgroundTransparency = 1
-    CloseButton.Position = UDim2.new(1, -30, 0.5, -10)
-    CloseButton.Size = UDim2.new(0, 20, 0, 20)
-    CloseButton.Parent = Topbar
-
-    -- Tab Container with smooth scrolling
-    local TabContainer = Instance.new("Frame")
-    TabContainer.Name = "TabContainer"
-    TabContainer.Size = UDim2.new(1, 0, 1, -30)
-    TabContainer.Position = UDim2.new(0, 0, 0, 30)
-    TabContainer.BackgroundTransparency = 1
-    TabContainer.Parent = MainFrame
-
-    -- Tab Buttons with modern styling
-    local TabButtons = Instance.new("ScrollingFrame")
-    TabButtons.Name = "TabButtons"
-    TabButtons.Size = UDim2.new(0, 90, 1, 0)
-    TabButtons.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-    TabButtons.BorderSizePixel = 0
-    TabButtons.ScrollBarThickness = 3
-    TabButtons.Parent = TabContainer
-
-    local TabListLayout = Instance.new("UIListLayout")
-    TabListLayout.Parent = TabButtons
-    TabListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    TabListLayout.Padding = UDim.new(0, 3)
-    TabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-    -- Tabs Folder
-    local TabsFolder = Instance.new("Folder")
-    TabsFolder.Name = "Tabs"
-    TabsFolder.Parent = TabContainer
-
-    -- Modern Floating Menu Button
-    local MenuButton = Instance.new("ImageButton")
-    MenuButton.Name = "MenuButton"
-    MenuButton.Image = "rbxassetid://3926307971"
-    MenuButton.ImageRectOffset = Vector2.new(4, 844)
-    MenuButton.ImageRectSize = Vector2.new(36, 36)
-    MenuButton.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
-    MenuButton.BackgroundTransparency = 0.5
-    MenuButton.BorderSizePixel = 0
-    MenuButton.Size = UDim2.new(0, 40, 0, 40)
-    MenuButton.Position = UDim2.new(0, 10, 0, 10)
-    MenuButton.Visible = true
-    MenuButton.Parent = PhantomGUI
-    
-    -- Make UI draggable
-    local function MakeDraggable(topbar, frame)
-        local dragging = false
-        local dragInput, dragStart, startPos
-
-        topbar.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                dragging = true
-                dragStart = input.Position
-                startPos = frame.Position
-                
-                input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then
-                        dragging = false
-                    end
-                end)
-            end
-        end)
-
-        input.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                dragInput = input
-            end
-        end)
-
-        input.InputChanged:Connect(function(input)
-            if (input == dragInput and dragging) then
-                local delta = input.Position - dragStart
-                frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-            end
-        end)
-    end
-
-    MakeDraggable(Topbar, MainFrame)
-    MakeDraggable(MenuButton, MenuButton)
-
-    -- UI Visibility Control
-    CloseButton.MouseButton1Click:Connect(function()
-        MainFrame.Visible = false
-    end)
-    
-    MenuButton.MouseButton1Click:Connect(function()
-        MainFrame.Visible = not MainFrame.Visible
-    end)
-
-    input.InputBegan:Connect(function(key)
-        if key.KeyCode == Enum.KeyCode.Insert then
-            MainFrame.Visible = not MainFrame.Visible
-        end
-    end)
-    
-    -- Library Functions
-    function OrionLib:MakeWindow(options)
-        local window = {}
-        
-        function window:MakeTab(options)
-            local tabName = options.Name or "Tab"
-            
-            -- Tab Button with modern style
-            local TabButton = Instance.new("TextButton")
-            TabButton.Name = tabName
-            TabButton.Text = "  " .. tabName
-            TabButton.Font = Enum.Font.Gotham
-            TabButton.TextSize = 12
-            TabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-            TabButton.TextXAlignment = Enum.TextXAlignment.Left
-            TabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-            TabButton.BorderSizePixel = 0
-            TabButton.Size = UDim2.new(0.9, 0, 0, 30)
-            TabButton.LayoutOrder = #TabButtons:GetChildren()
-            TabButton.Parent = TabButtons
-
-            -- Tab Content Frame
-            local TabFrame = Instance.new("ScrollingFrame")
-            TabFrame.Name = tabName
-            TabFrame.Size = UDim2.new(1, -100, 1, 0)
-            TabFrame.Position = UDim2.new(0, 100, 0, 0)
-            TabFrame.BackgroundTransparency = 1
-            TabFrame.Visible = false
-            TabFrame.Parent = TabsFolder
-            TabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-            TabFrame.ScrollBarThickness = 3
-
-            local TabList = Instance.new("UIListLayout")
-            TabList.Parent = TabFrame
-            TabList.Padding = UDim.new(0, 5)
-            TabList.SortOrder = Enum.SortOrder.LayoutOrder
-
-            -- Show/Hide Tab
-            TabButton.MouseButton1Click:Connect(function()
-                for _, tab in ipairs(TabsFolder:GetChildren()) do
-                    if tab:IsA("ScrollingFrame") then
-                        tab.Visible = false
-                    end
-                end
-                TabFrame.Visible = true
-            end)
-
-            -- Default Tab
-            if #TabsFolder:GetChildren() == 1 then
-                TabFrame.Visible = true
-            end
-
-            local tab = {}
-            
-            -- Add Button with modern style
-            function tab:AddButton(options)
-                local btnName = options.Name or "Button"
-                local callback = options.Callback or function() end
-                
-                local Button = Instance.new("TextButton")
-                Button.Name = btnName
-                Button.Text = btnName
-                Button.Font = Enum.Font.Gotham
-                Button.TextSize = 12
-                Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-                Button.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-                Button.BorderSizePixel = 0
-                Button.Size = UDim2.new(0.95, 0, 0, 30)
-                Button.LayoutOrder = #TabFrame:GetChildren()
-                Button.Parent = TabFrame
-                
-                Button.MouseButton1Click:Connect(callback)
-                
-                TabFrame.CanvasSize = UDim2.new(0, 0, 0, TabList.AbsoluteContentSize.Y + 40)
-            end
-            
-            -- Add Toggle with modern style
-            function tab:AddToggle(options)
-                local toggleName = options.Name or "Toggle"
-                local default = options.Default or false
-                local callback = options.Callback or function() end
-                
-                local ToggleFrame = Instance.new("Frame")
-                ToggleFrame.Name = toggleName
-                ToggleFrame.BackgroundTransparency = 1
-                ToggleFrame.Size = UDim2.new(0.95, 0, 0, 30)
-                ToggleFrame.LayoutOrder = #TabFrame:GetChildren()
-                ToggleFrame.Parent = TabFrame
-                
-                local ToggleButton = Instance.new("TextButton")
-                ToggleButton.Name = "ToggleButton"
-                ToggleButton.Text = "  " .. toggleName
-                ToggleButton.Font = Enum.Font.Gotham
-                ToggleButton.TextSize = 12
-                ToggleButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-                ToggleButton.TextXAlignment = Enum.TextXAlignment.Left
-                ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-                ToggleButton.BorderSizePixel = 0
-                ToggleButton.Size = UDim2.new(1, 0, 1, 0)
-                ToggleButton.Parent = ToggleFrame
-                
-                local ToggleIndicator = Instance.new("Frame")
-                ToggleIndicator.Name = "Indicator"
-                ToggleIndicator.Size = UDim2.new(0, 18, 0, 18)
-                ToggleIndicator.Position = UDim2.new(1, -25, 0.5, -9)
-                ToggleIndicator.BackgroundColor3 = default and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(100, 100, 100)
-                ToggleIndicator.BorderSizePixel = 0
-                ToggleIndicator.Parent = ToggleButton
-                
-                local function updateToggle(value)
-                    callback(value)
-                    ToggleIndicator.BackgroundColor3 = value and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(100, 100, 100)
-                end
-                
-                ToggleButton.MouseButton1Click:Connect(function()
-                    updateToggle(not (ToggleIndicator.BackgroundColor3 == Color3.fromRGB(0, 200, 0)))
-                end)
-                
-                TabFrame.CanvasSize = UDim2.new(0, 0, 0, TabList.AbsoluteContentSize.Y + 40)
-                
-                return {
-                    Set = function(_, value)
-                        updateToggle(value)
-                    end
-                }
-            end
-            
-            -- Add Slider with modern style
-            function tab:AddSlider(options)
-                local sliderName = options.Name or "Slider"
-                local min = options.Min or 0
-                local max = options.Max or 100
-                local default = options.Default or 50
-                local callback = options.Callback or function() end
-                
-                local SliderFrame = Instance.new("Frame")
-                SliderFrame.Name = sliderName
-                SliderFrame.BackgroundTransparency = 1
-                SliderFrame.Size = UDim2.new(0.95, 0, 0, 50)
-                SliderFrame.LayoutOrder = #TabFrame:GetChildren()
-                SliderFrame.Parent = TabFrame
-                
-                local SliderTitle = Instance.new("TextLabel")
-                SliderTitle.Name = "Title"
-                SliderTitle.Text = "  " .. sliderName
-                SliderTitle.Font = Enum.Font.Gotham
-                SliderTitle.TextSize = 12
-                SliderTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
-                SliderTitle.TextXAlignment = Enum.TextXAlignment.Left
-                SliderTitle.BackgroundTransparency = 1
-                SliderTitle.Size = UDim2.new(1, 0, 0.5, 0)
-                SliderTitle.Parent = SliderFrame
-                
-                local SliderBar = Instance.new("Frame")
-                SliderBar.Name = "Bar"
-                SliderBar.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
-                SliderBar.BorderSizePixel = 0
-                SliderBar.Position = UDim2.new(0.05, 0, 0.7, 0)
-                SliderBar.Size = UDim2.new(0.9, 0, 0.2, 0)
-                SliderBar.Parent = SliderFrame
-                
-                local SliderFill = Instance.new("Frame")
-                SliderFill.Name = "Fill"
-                SliderFill.BackgroundColor3 = Color3.fromRGB(255, 0, 128)
-                SliderFill.BorderSizePixel = 0
-                SliderFill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
-                SliderFill.Parent = SliderBar
-                
-                local SliderValue = Instance.new("TextLabel")
-                SliderValue.Name = "Value"
-                SliderValue.Text = tostring(default)
-                SliderValue.Font = Enum.Font.Gotham
-                SliderValue.TextSize = 12
-                SliderValue.TextColor3 = Color3.fromRGB(255, 255, 255)
-                SliderValue.BackgroundTransparency = 1
-                SliderValue.Position = UDim2.new(0.5, 0, 0, 0)
-                SliderValue.Size = UDim2.new(0.5, 0, 1, 0)
-                SliderValue.Parent = SliderBar
-                
-                local function updateSlider(value)
-                    local percent = math.clamp((value - min) / (max - min), 0, 1)
-                    SliderFill.Size = UDim2.new(percent, 0, 1, 0)
-                    SliderValue.Text = tostring(math.floor(value))
-                    callback(value)
-                end
-                
-                SliderBar.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        local function moveSlider()
-                            local pos = input.Position.X - SliderBar.AbsolutePosition.X
-                            local percent = math.clamp(pos / SliderBar.AbsoluteSize.X, 0, 1)
-                            local value = min + (max - min) * percent
-                            updateSlider(value)
-                        end
-                        
-                        moveSlider()
-                        
-                        local connection
-                        connection = input.Changed:Connect(function()
-                            if input.UserInputState == Enum.UserInputState.End then
-                                connection:Disconnect()
-                            else
-                                moveSlider()
-                            end
-                        end)
-                    end
-                end)
-                
-                TabFrame.CanvasSize = UDim2.new(0, 0, 0, TabList.AbsoluteContentSize.Y + 50)
-                
-                return {
-                    Set = function(_, value)
-                        updateSlider(value)
-                    end
-                }
-            end
-            
-            return tab
-        end
-        
-        return window
-    end
-    
-    return OrionLib
-end)()
-
--- ===== AIMBOT CORE =====
 -- FOV Circle with improved visuals
 local FOVCircle = Drawing.new("Circle")
 FOVCircle.Visible = true
@@ -395,150 +34,161 @@ local settings = {
     TeamCheck = true,
     WallCheck = true,
     AutoShoot = false,
-    AimMode = "Closest to Crosshair",
     FOVVisible = true,
-    HealthBarESP = true,
+    HighlightESP = true,
     DistanceESP = true,
     NameTags = true,
-    HighlightESP = true, -- Using Highlight instead of Box ESP
-    SkeletonESP = false,
-    WeaponESP = false,
-    ThreatLevelESP = false,
-    LightweightMode = true, -- Enabled by default for mobile
     SilentAim = false,
     Active = false
 }
 
--- Create window with modern design
-local Window = OrionLib:MakeWindow({
-    Name = "👁️ PHANTOM HUNTER",
-})
+-- Create tabs
+local CombatTab = Window:CreateTab("🔥 AIMBOT", 4483362458)
+local VisualsTab = Window:CreateTab("👁️ VISUALS", 4483362458)
 
--- Combat Tab
-local CombatTab = Window:MakeTab({
-    Name = "🔥 AIMBOT",
-})
-
-local AimToggle = CombatTab:AddToggle({
+-- Combat Tab Elements
+local AimToggle = CombatTab:CreateToggle({
     Name = "ACTIVATE AIMBOT",
-    Default = false,
+    CurrentValue = false,
+    Flag = "AimToggle",
     Callback = function(Value)
         settings.SilentAim = Value
         settings.Active = Value
         if Value then
-            OrionLib:MakeNotification({
-                Name = "AIMBOT ACTIVATED",
+            Rayfield:Notify({
+                Title = "AIMBOT ACTIVATED",
                 Content = "Quantum targeting system engaged",
-                Image = "rbxassetid://3926305904",
-                Time = 3
+                Duration = 3,
+                Image = 4483362458,
             })
         end
-    end    
+    end,
 })
 
-CombatTab:AddToggle({
+CombatTab:CreateToggle({
     Name = "AUTO SHOOT",
-    Default = settings.AutoShoot,
+    CurrentValue = settings.AutoShoot,
+    Flag = "AutoShoot",
     Callback = function(Value)
         settings.AutoShoot = Value
-    end    
+    end,
 })
 
-CombatTab:AddSlider({
+CombatTab:CreateSlider({
     Name = "PREDICTION",
-    Min = 0.01,
-    Max = 0.5,
-    Default = settings.Prediction,
+    Range = {0.01, 0.5},
+    Increment = 0.01,
+    Suffix = "sec",
+    CurrentValue = settings.Prediction,
+    Flag = "Prediction",
     Callback = function(Value)
         settings.Prediction = Value
-    end    
+    end,
 })
 
-CombatTab:AddSlider({
+CombatTab:CreateSlider({
     Name = "SMOOTHING",
-    Min = 0.01,
-    Max = 1.0,
-    Default = settings.Smoothing,
+    Range = {0.01, 1.0},
+    Increment = 0.01,
+    Suffix = "x",
+    CurrentValue = settings.Smoothing,
+    Flag = "Smoothing",
     Callback = function(Value)
         settings.Smoothing = Value
-    end    
+    end,
 })
 
-CombatTab:AddToggle({
+CombatTab:CreateToggle({
     Name = "WALL CHECK",
-    Default = settings.WallCheck,
+    CurrentValue = settings.WallCheck,
+    Flag = "WallCheck",
     Callback = function(Value)
         settings.WallCheck = Value
-    end    
+    end,
 })
 
-CombatTab:AddToggle({
+CombatTab:CreateToggle({
     Name = "TEAM CHECK",
-    Default = settings.TeamCheck,
+    CurrentValue = settings.TeamCheck,
+    Flag = "TeamCheck",
     Callback = function(Value)
         settings.TeamCheck = Value
-    end    
+    end,
 })
 
-CombatTab:AddSlider({
+CombatTab:CreateSlider({
     Name = "FOV SIZE",
-    Min = 20,
-    Max = 300,
-    Default = 80,
+    Range = {20, 300},
+    Increment = 5,
+    Suffix = "pixels",
+    CurrentValue = 80,
+    Flag = "FOVSize",
     Callback = function(Value)
         FOVCircle.Radius = Value
-    end    
+    end,
 })
 
--- Visuals Tab
-local VisualsTab = Window:MakeTab({
-    Name = "👁️ VISUALS",
-})
-
-VisualsTab:AddToggle({
+-- Visuals Tab Elements
+VisualsTab:CreateToggle({
     Name = "SHOW FOV",
-    Default = settings.FOVVisible,
+    CurrentValue = settings.FOVVisible,
+    Flag = "FOVVisible",
     Callback = function(Value)
         settings.FOVVisible = Value
         FOVCircle.Visible = Value
-    end    
+    end,
 })
 
-VisualsTab:AddToggle({
+VisualsTab:CreateToggle({
     Name = "HIGHLIGHT ESP",
-    Default = settings.HighlightESP,
+    CurrentValue = settings.HighlightESP,
+    Flag = "HighlightESP",
     Callback = function(Value)
         settings.HighlightESP = Value
-    end    
+        updateHighlights()
+    end,
 })
 
-VisualsTab:AddToggle({
+VisualsTab:CreateToggle({
     Name = "DISTANCE",
-    Default = settings.DistanceESP,
+    CurrentValue = settings.DistanceESP,
+    Flag = "DistanceESP",
     Callback = function(Value)
         settings.DistanceESP = Value
-    end    
+    end,
 })
 
-VisualsTab:AddToggle({
+VisualsTab:CreateToggle({
     Name = "NAMES",
-    Default = settings.NameTags,
+    CurrentValue = settings.NameTags,
+    Flag = "NameTags",
     Callback = function(Value)
         settings.NameTags = Value
-    end    
+    end,
+})
+
+VisualsTab:CreateColorPicker({
+    Name = "ENEMY COLOR",
+    Color = Color3.fromRGB(255, 0, 0),
+    Flag = "EnemyColor",
+    Callback = function(Value)
+        settings.EnemyColor = Value
+        updateHighlights()
+    end
 })
 
 -- ===== PLAYER HIGHLIGHT SYSTEM =====
 local highlightCache = {}
 local characterConnections = {}
+settings.EnemyColor = Color3.fromRGB(255, 0, 0)
 
 local function createHighlight(player)
     if highlightCache[player] then return end
     
     local highlight = Instance.new("Highlight")
     highlight.Name = player.Name .. "_Highlight"
-    highlight.OutlineColor = Color3.new(1, 0, 0)
-    highlight.FillColor = Color3.new(1, 0, 0)
+    highlight.OutlineColor = settings.EnemyColor
+    highlight.FillColor = settings.EnemyColor
     highlight.FillTransparency = 0.8
     highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     highlight.Enabled = false
@@ -583,6 +233,24 @@ local function removeHighlight(player)
     end
 end
 
+-- Update highlights
+local function updateHighlights()
+    for player, highlight in pairs(highlightCache) do
+        if player and player.Parent and highlight then
+            highlight.Enabled = settings.HighlightESP
+            
+            -- Update color based on team
+            if settings.TeamCheck and player.Team == game.Players.LocalPlayer.Team then
+                highlight.OutlineColor = Color3.new(0, 1, 0)
+                highlight.FillColor = Color3.new(0, 1, 0)
+            else
+                highlight.OutlineColor = settings.EnemyColor
+                highlight.FillColor = settings.EnemyColor
+            end
+        end
+    end
+end
+
 -- Player management
 game.Players.PlayerAdded:Connect(function(player)
     createHighlight(player)
@@ -595,24 +263,6 @@ end)
 for _, player in ipairs(game.Players:GetPlayers()) do
     if player ~= game.Players.LocalPlayer then
         createHighlight(player)
-    end
-end
-
--- Update highlights
-local function updateHighlights()
-    for player, highlight in pairs(highlightCache) do
-        if player and player.Parent and highlight then
-            highlight.Enabled = settings.HighlightESP
-            
-            -- Update color based on team
-            if settings.TeamCheck and player.Team == game.Players.LocalPlayer.Team then
-                highlight.OutlineColor = Color3.new(0, 1, 0)
-                highlight.FillColor = Color3.new(0, 1, 0)
-            else
-                highlight.OutlineColor = Color3.new(1, 0, 0)
-                highlight.FillColor = Color3.new(1, 0, 0)
-            end
-        end
     end
 end
 
@@ -695,7 +345,6 @@ local function aimAtTarget(target)
     if not targetPart then return end
     
     local camera = workspace.CurrentCamera
-    local localMouse = game.Players.LocalPlayer:GetMouse()
     
     local predictedPosition = targetPart.Position + (targetPart.Velocity * settings.Prediction)
     local smoothedPosition = camera.CFrame.Position:Lerp(predictedPosition, settings.Smoothing)
@@ -736,7 +385,7 @@ end
 
 -- ===== OPTIMIZED RENDER LOOP =====
 local lastUpdate = 0
-local updateInterval = settings.LightweightMode and 0.1 or 0.05
+local updateInterval = 0.1 -- Optimized for mobile
 
 game:GetService("RunService").RenderStepped:Connect(function(step)
     -- Throttle updates for mobile
@@ -745,9 +394,6 @@ game:GetService("RunService").RenderStepped:Connect(function(step)
     
     -- Update FOV position
     FOVCircle.Position = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2, workspace.CurrentCamera.ViewportSize.Y/2)
-    
-    -- Update highlights
-    updateHighlights()
     
     -- Refresh target cache periodically
     if step % 5 < updateInterval then
@@ -767,17 +413,21 @@ end)
 setupHook()
 
 -- Initial notification
-task.spawn(function()
-    wait(1)
-    if game:GetService("CoreGui"):FindFirstChild("PhantomGUI") then
-        game:GetService("CoreGui").PhantomGUI.MenuButton.Visible = true
-        OrionLib:MakeNotification({
-            Name = "PHANTOM HUNTER LOADED",
-            Content = "Press the menu button to open settings",
-            Image = "rbxassetid://3926307971",
-            Time = 5
-        })
-    end
-end)
+Rayfield:Notify({
+    Title = "PHANTOM HUNTER LOADED",
+    Content = "Aimbot and ESP systems initialized",
+    Duration = 5,
+    Image = 4483362458,
+})
 
-print("Phantom Hunter v5.0 - Optimized for iPhone X")
+-- KRNL compatibility fix
+if identifyexecutor and string.find(string.lower(identifyexecutor()), "krnl") then
+    Rayfield:Notify({
+        Title = "KRNL COMPATIBILITY",
+        Content = "Special optimizations applied for KRNL",
+        Duration = 5,
+        Image = 4483362458,
+    })
+end
+
+print("Phantom Hunter v5.1 - Rayfield Edition")
